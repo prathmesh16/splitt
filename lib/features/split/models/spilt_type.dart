@@ -14,4 +14,6 @@ enum SplitType {
         SplitType.share => const Icon(Icons.bar_chart_outlined),
         SplitType.adjustment => const Text("+/-"),
       };
+
+  String get splitTypeName => this == SplitType.equal ? "equally" : "unequally";
 }

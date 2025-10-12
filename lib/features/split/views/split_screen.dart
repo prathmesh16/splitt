@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/models/expense.dart';
-import 'package:splitt/common/models/user.dart';
 import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/split/views/adjustment_split.dart';
 import 'package:splitt/features/split/views/amount_split.dart';
@@ -22,32 +21,6 @@ class SplitScreen extends StatefulWidget {
 
 class _SplitScreenState extends State<SplitScreen>
     with SingleTickerProviderStateMixin {
-  final List<User> users = [
-    const User(
-      id: "1",
-      name: "Prathmesh",
-    ),
-    const User(
-      id: "2",
-      name: "Yash",
-    ),
-    const User(
-      id: "3",
-      name: "Sarvesh",
-    ),
-    const User(
-      id: "4",
-      name: "Saurabh",
-    ),
-    const User(
-      id: "5",
-      name: "Omkar",
-    ),
-    const User(
-      id: "6",
-      name: "Abhijeet",
-    ),
-  ];
 
   late TabController _tabController;
   late Expense _expense;
@@ -59,10 +32,7 @@ class _SplitScreenState extends State<SplitScreen>
       length: SplitType.values.length,
       vsync: this,
     );
-    _expense = Expense(
-      amount: 100,
-      users: users,
-    );
+    _expense = context.read<Expense>();
   }
 
   bool _isTabSelected(SplitType type) {
@@ -84,7 +54,9 @@ class _SplitScreenState extends State<SplitScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                     child: const Text(
                       "Cancel",
                       style: TextStyle(
@@ -101,7 +73,9 @@ class _SplitScreenState extends State<SplitScreen>
                     ),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                     child: const Text(
                       "Done",
                       style: TextStyle(
@@ -174,19 +148,19 @@ class _SplitScreenState extends State<SplitScreen>
                                   controller: _tabController,
                                   children: [
                                     EqualSplit(
-                                      users: users,
+                                      users: _expense.users,
                                     ),
                                     AmountSplit(
-                                      users: users,
+                                      users: _expense.users,
                                     ),
                                     PercentageSplit(
-                                      users: users,
+                                      users: _expense.users,
                                     ),
                                     ShareSplit(
-                                      users: users,
+                                      users: _expense.users,
                                     ),
                                     AdjustmentSplit(
-                                      users: users,
+                                      users: _expense.users,
                                     ),
                                   ],
                                 ),

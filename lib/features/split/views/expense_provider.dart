@@ -14,8 +14,8 @@ class ExpenseProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => expense,
+    return ChangeNotifierProvider.value(
+      value: expense,
       child: child,
     );
   }

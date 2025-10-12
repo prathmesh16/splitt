@@ -5,22 +5,60 @@ import 'package:splitt/features/split/models/spilt_type.dart';
 class Expense extends ChangeNotifier {
   final List<User> users;
   late SplitType _splitType;
-  final double amount;
+  double _amount = 0;
   late final List<String> _selectedUsers;
   final Map<String, double> _amounts = {};
   final Map<String, double> _percentages = {};
   final Map<String, double> _shares = {};
   final Map<String, double> _adjustments = {};
 
+  final Map<String, double> _paidBy = {};
+  final User me = const User(
+    id: "1",
+    name: "Prathmesh",
+  );
+
   Expense({
     required this.users,
-    required this.amount,
+    double amount = 0,
   }) {
     _splitType = SplitType.equal;
     _selectedUsers = users.map((user) => user.id).toList();
     for (var user in users) {
       _shares[user.id] = 1;
     }
+    _amount = amount;
+    _paidBy[me.id] = amount;
+  }
+
+  set amount(double amount) {
+    _amount = amount;
+    _paidBy[me.id] = amount;
+    notifyListeners();
+  }
+
+  double get amount => _amount;
+
+  int get paidByLength => _paidBy.length;
+
+  bool isUserPaid(String userId) {
+    return _paidBy.containsKey(userId);
+  }
+
+  void setPaidBy(String userId) {
+    _paidBy.clear();
+    _paidBy[userId] = amount;
+    notifyListeners();
+  }
+
+  String getPaidBy() {
+    if (_paidBy[me.id] != null) {
+      return "you";
+    }
+    for (final paidBy in _paidBy.keys) {
+      return users.firstWhere((user) => user.id == paidBy).name;
+    }
+    return "";
   }
 
   set splitType(SplitType splitType) {

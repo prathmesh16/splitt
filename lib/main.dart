@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:splitt/common/utils/constants.dart';
+import 'package:splitt/features/group/group_details.dart';
 import 'package:splitt/features/split/views/split_screen.dart';
 
 void main() {
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Constants.primaryColor),
         useMaterial3: true,
       ),
-      home: const SplitScreen(),
+      home: GroupDetails(),
     );
   }
 }
