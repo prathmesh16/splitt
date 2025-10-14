@@ -15,13 +15,15 @@ class Expense extends ChangeNotifier {
 
   final Map<String, double> _paidBy = {};
   final User me = const User(
-    id: "1",
-    name: "Prathmesh",
+    id: "u100",
+    name: "Alice",
   );
   late final DateTime date;
+  final String groupId;
 
   Expense({
     required this.users,
+    required this.groupId,
     double amount = 0,
   }) {
     _splitType = SplitType.equal;
@@ -238,5 +240,54 @@ class Expense extends ChangeNotifier {
       _adjustments[userId] = adjustment;
     }
     notifyListeners();
+  }
+
+  List<String> getIncludedIds() {
+    final expense = this;
+    final List<String> ids = [];
+    switch (expense.splitType) {
+      case SplitType.equal:
+        ids.addAll(expense.selectedUsers);
+      case SplitType.amount:
+        expense.amounts.forEach((id, amount) {
+          if (amount != 0) {
+            ids.add(id);
+          }
+        });
+      case SplitType.percentage:
+        expense.percentages.forEach((id, amount) {
+          if (amount != 0) {
+            ids.add(id);
+          }
+        });
+      case SplitType.share:
+        expense.shares.forEach((id, amount) {
+          if (amount != 0) {
+            ids.add(id);
+          }
+        });
+      case SplitType.adjustment:
+        for (final user in expense.users) {
+          if (expense.getUserAdjustmentTotalAmount(user.id) != 0) {
+            ids.add(user.id);
+          }
+        }
+    }
+    return ids;
+  }
+
+  Map<String, double> getSplitDetails() {
+    switch (_splitType) {
+      case SplitType.equal:
+        return {};
+      case SplitType.amount:
+        return amounts;
+      case SplitType.percentage:
+        return percentages;
+      case SplitType.share:
+        return shares;
+      case SplitType.adjustment:
+        return adjustments;
+    }
   }
 }

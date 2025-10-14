@@ -29,6 +29,24 @@ class BaseAPIService {
     return _handleResponse(response);
   }
 
+  Future<APIResponse> post(
+    String endpoint, {
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final response = await http.post(
+      uri,
+      headers: {
+        ...defaultHeaders,
+        ...?headers,
+      },
+      body: body,
+    );
+
+    return _handleResponse(response);
+  }
+
   APIResponse _handleResponse(http.Response response) {
     final statusCode = response.statusCode;
     final apiResponse = APIResponse(statusCode: statusCode);

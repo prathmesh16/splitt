@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:splitt/common/models/expense.dart';
+import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
 import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/common/utils/date_time_extensions.dart';
@@ -10,50 +11,40 @@ import 'package:splitt/features/split/views/expense_provider.dart';
 import 'package:splitt/features/split/views/new_split.dart';
 
 class GroupDetails extends StatefulWidget {
-  const GroupDetails({super.key});
+  final Group group;
+
+  const GroupDetails({
+    super.key,
+    required this.group,
+  });
 
   @override
   State<GroupDetails> createState() => _GroupDetailsState();
 }
 
 class _GroupDetailsState extends State<GroupDetails> {
-  final List<User> users = [
-    const User(
-      id: "1",
-      name: "Prathmesh",
-    ),
-    const User(
-      id: "2",
-      name: "Yash",
-    ),
-    const User(
-      id: "3",
-      name: "Sarvesh",
-    ),
-    const User(
-      id: "4",
-      name: "Saurabh",
-    ),
-    const User(
-      id: "5",
-      name: "Omkar",
-    ),
-    const User(
-      id: "6",
-      name: "Abhijeet",
-    ),
-  ];
 
   final GroupExpense groupExpense = GroupExpense(
     savedExpenses: [],
   );
+
+  late final List<User> users;
+
+  @override
+  void initState() {
+    super.initState();
+    users = widget.group.users;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final newExpense = Expense(users: users);
+          final newExpense = Expense(
+            groupId: widget.group.id,
+            users: users,
+          );
           Navigator.push(
             context,
             MaterialPageRoute(

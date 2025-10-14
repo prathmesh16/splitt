@@ -4,6 +4,7 @@ import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/features/group/presentation/bloc/groups_bloc.dart';
 import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
+import 'package:splitt/features/group/presentation/views/group_details.dart';
 
 class GroupsListScreen extends StatefulWidget {
   const GroupsListScreen({super.key});
@@ -81,47 +82,59 @@ class _GroupTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 8,
-        top: 4,
-        bottom: 4,
-      ),
-      child: Row(
-        children: [
-          Container(
-            height: 36,
-            width: 36,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Image.network(
-              "https://avatar.iran.liara.run/public/boy",
-              loadingBuilder: (_, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-                return Container(
-                  height: 36,
-                  width: 36,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                );
-              },
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => GroupDetails(
+              group: group,
             ),
           ),
-          const SizedBox(width: 16),
-          Text(
-            group.name,
-            style: const TextStyle(
-              fontSize: 16,
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 8,
+          top: 4,
+          bottom: 4,
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 36,
+              width: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Image.network(
+                "https://avatar.iran.liara.run/public/boy",
+                loadingBuilder: (_, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Container(
+                    height: 36,
+                    width: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-          const Spacer(),
-        ],
+            const SizedBox(width: 16),
+            Text(
+              group.name,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            const Spacer(),
+          ],
+        ),
       ),
     );
   }

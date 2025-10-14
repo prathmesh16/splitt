@@ -10,8 +10,8 @@ class GroupExpense {
   });
 
   final User me = const User(
-    id: "1",
-    name: "Prathmesh",
+    id: "u100",
+    name: "Alice",
   );
 
   List<String> getIncludedIds(Expense expense) {

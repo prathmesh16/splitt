@@ -19,9 +19,7 @@ class GroupsBloc extends Cubit<UIState<List<Group>>> {
       final groups = await _groupsRepository.getAllGroups();
       final groupsList = groups.map((g) => Group.fromGroupModel(g)).toList();
       emit(Success(groupsList));
-    } catch (e, stackTrace) {
-      print('❌ Error type: ${e.runtimeType}');
-      print(stackTrace);
+    } catch (e) {
       emit(Failure(e as Error));
     }
   }

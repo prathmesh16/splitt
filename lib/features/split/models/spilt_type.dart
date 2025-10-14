@@ -16,4 +16,12 @@ enum SplitType {
       };
 
   String get splitTypeName => this == SplitType.equal ? "equally" : "unequally";
+
+  String get backendValue => switch (this) {
+        SplitType.equal => "EQUAL_SPLIT",
+        SplitType.amount => "EXACT_AMOUNT_SPLIT",
+        SplitType.percentage => "SPLIT_BY_PERCENTAGES",
+        SplitType.share => "SHARES_SPLIT",
+        SplitType.adjustment => "ADJUSTMENT_SPLIT",
+      };
 }
