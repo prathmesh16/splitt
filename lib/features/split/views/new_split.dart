@@ -4,6 +4,8 @@ import 'package:splitt/common/elevated_widget.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/common/utils/constants.dart';
+import 'package:splitt/features/expense/presentation/bloc/save_expense_bloc.dart';
+import 'package:splitt/features/expense/presentation/views/save_button.dart';
 import 'package:splitt/features/split/views/expense_provider.dart';
 import 'package:splitt/features/split/views/paid_by.dart';
 import 'package:splitt/features/split/views/split_screen.dart';
@@ -32,7 +34,7 @@ class _NewSplitState extends State<NewSplit> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: 8,
+                horizontal: 12,
                 vertical: 8,
               ),
               child: Row(
@@ -47,16 +49,16 @@ class _NewSplitState extends State<NewSplit> {
                   const Text(
                     "Add an expense",
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 18,
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
+                  SaveButton(
+                    onTap: (SaveExpenseBloc saveExpenseBloc) {
                       final description = descriptionController.text;
                       final amount = double.tryParse(amountController.text);
                       if (description.isNotEmpty && amount != null) {
                         widget.onSave.call();
-                        Navigator.pop(context);
+                        saveExpenseBloc.saveExpense(context.read<Expense>());
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -67,14 +69,6 @@ class _NewSplitState extends State<NewSplit> {
                         );
                       }
                     },
-                    child: const Text(
-                      "Save",
-                      style: TextStyle(
-                        color: Constants.primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                      ),
-                    ),
                   ),
                 ],
               ),

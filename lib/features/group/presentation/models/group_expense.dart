@@ -3,7 +3,7 @@ import 'package:splitt/features/users/presentation/models/user.dart';
 import 'package:splitt/features/split/models/spilt_type.dart';
 
 class GroupExpense {
-  final List<Expense> savedExpenses;
+  List<Expense> savedExpenses;
 
   GroupExpense({
     required this.savedExpenses,

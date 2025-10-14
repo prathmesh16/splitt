@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:splitt/common/models/expense.dart';
+import 'package:splitt/features/core/models/ui_state.dart';
+import 'package:splitt/features/expense/presentation/bloc/expenses_bloc.dart';
+import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
 import 'package:splitt/common/utils/constants.dart';
@@ -29,16 +33,29 @@ class _GroupDetailsState extends State<GroupDetails> {
   );
 
   late final List<User> users;
+  late final ExpensesBloc expensesBloc;
 
   @override
   void initState() {
     super.initState();
     users = widget.group.users;
+    GroupUsersDataStore().groupId = widget.group.id;
+    GroupUsersDataStore().users = widget.group.users;
+    expensesBloc = ExpensesBloc();
+    expensesBloc.getGroupExpenses(widget.group.id);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(Icons.arrow_back_ios_new_rounded),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final newExpense = Expense(
@@ -55,6 +72,7 @@ class _GroupDetailsState extends State<GroupDetails> {
                     setState(() {
                       groupExpense.savedExpenses.add(newExpense);
                     });
+                    expensesBloc.getGroupExpenses(widget.group.id);
                   },
                 ),
               ),
@@ -92,9 +110,23 @@ class _GroupDetailsState extends State<GroupDetails> {
               ),
             ),
             Expanded(
-              child: _ExpenseList(
-                savedExpenses: groupExpense.savedExpenses,
-              ),
+              child: BlocConsumer(
+                  bloc: expensesBloc,
+                  listener: (_, state) {
+                    if (state is Success) {
+                      setState(() {
+                        groupExpense.savedExpenses = state.data.toList();
+                      });
+                    }
+                  },
+                  builder: (context, UIState state) {
+                    if (state is Success) {
+                      return _ExpenseList(
+                        savedExpenses: state.data,
+                      );
+                    }
+                    return const Center(child: CircularProgressIndicator());
+                  }),
             ),
           ],
         ),

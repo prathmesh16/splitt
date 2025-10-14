@@ -41,9 +41,8 @@ class BaseAPIService {
         ...defaultHeaders,
         ...?headers,
       },
-      body: body,
+      body: jsonEncode(body),
     );
-
     return _handleResponse(response);
   }
 
@@ -53,6 +52,7 @@ class BaseAPIService {
     final body = response.body.isNotEmpty ? jsonDecode(response.body) : null;
     switch (statusCode) {
       case 200:
+      case 201:
         apiResponse.data = body;
       default:
         throw Exception();

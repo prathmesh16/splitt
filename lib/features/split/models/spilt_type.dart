@@ -24,4 +24,21 @@ enum SplitType {
         SplitType.share => "SHARES_SPLIT",
         SplitType.adjustment => "ADJUSTMENT_SPLIT",
       };
+
+  static SplitType fromString(String value) {
+    switch (value) {
+      case 'EQUAL_SPLIT':
+        return SplitType.equal;
+      case 'EXACT_AMOUNT_SPLIT':
+        return SplitType.amount;
+      case 'SPLIT_BY_PERCENTAGES':
+        return SplitType.percentage;
+      case 'SHARES_SPLIT':
+        return SplitType.share;
+      case 'ADJUSTMENT_SPLIT':
+        return SplitType.adjustment;
+      default:
+        throw ArgumentError('Invalid SplitType: $value');
+    }
+  }
 }
