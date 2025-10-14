@@ -140,7 +140,7 @@ class _UserTileState extends State<_UserTile> {
                     ),
                   ),
                   Text(
-                    "₹${expense.getUserAdjustmentTotalAmount(widget.user.id)}",
+                    "₹${expense.getFormattedUserAdjustmentTotalAmount(widget.user.id)}",
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.black38,

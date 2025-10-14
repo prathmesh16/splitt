@@ -9,7 +9,12 @@ import 'package:splitt/features/split/views/paid_by.dart';
 import 'package:splitt/features/split/views/split_screen.dart';
 
 class NewSplit extends StatefulWidget {
-  const NewSplit({super.key});
+  final VoidCallback onSave;
+
+  const NewSplit({
+    super.key,
+    required this.onSave,
+  });
 
   @override
   State<NewSplit> createState() => _NewSplitState();
@@ -47,7 +52,20 @@ class _NewSplitState extends State<NewSplit> {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.pop(context);
+                      final description = descriptionController.text;
+                      final amount = double.tryParse(amountController.text);
+                      if (description.isNotEmpty && amount != null) {
+                        widget.onSave.call();
+                        Navigator.pop(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            duration: Duration(milliseconds: 500),
+                            content: Text("Please enter all details"),
+                          ),
+                        );
+                      }
                     },
                     child: const Text(
                       "Save",
@@ -98,6 +116,9 @@ class _NewSplitState extends State<NewSplit> {
                                   ),
                                 ),
                                 cursorColor: Constants.primaryColor,
+                                onChanged: (String? value) {
+                                  expense.name = value ?? "";
+                                },
                               ),
                             ),
                           ),
@@ -138,6 +159,10 @@ class _NewSplitState extends State<NewSplit> {
                                   expense.amount =
                                       double.tryParse(value ?? "") ?? 0;
                                 },
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                  decimal: true,
+                                ),
                               ),
                             ),
                           ),

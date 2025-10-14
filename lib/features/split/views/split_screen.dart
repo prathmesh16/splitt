@@ -28,11 +28,13 @@ class _SplitScreenState extends State<SplitScreen>
   @override
   void initState() {
     super.initState();
+    _expense = context.read<Expense>();
     _tabController = TabController(
+      initialIndex:
+          SplitType.values.indexWhere((type) => type == _expense.splitType),
       length: SplitType.values.length,
       vsync: this,
     );
-    _expense = context.read<Expense>();
   }
 
   bool _isTabSelected(SplitType type) {

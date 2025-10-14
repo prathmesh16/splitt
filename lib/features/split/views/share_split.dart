@@ -173,7 +173,7 @@ class _UserTileState extends State<_UserTile> {
                     ),
                   ),
                   Text(
-                    "₹${expense.getUserShareAmount(widget.user.id)}",
+                    "₹${expense.getFormattedUserShareAmount(widget.user.id)}",
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.black38,

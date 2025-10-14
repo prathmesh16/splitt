@@ -5,6 +5,7 @@ import 'package:splitt/features/split/models/spilt_type.dart';
 class Expense extends ChangeNotifier {
   final List<User> users;
   late SplitType _splitType;
+  String name = "";
   double _amount = 0;
   late final List<String> _selectedUsers;
   final Map<String, double> _amounts = {};
@@ -17,6 +18,7 @@ class Expense extends ChangeNotifier {
     id: "1",
     name: "Prathmesh",
   );
+  late final DateTime date;
 
   Expense({
     required this.users,
@@ -29,6 +31,7 @@ class Expense extends ChangeNotifier {
     }
     _amount = amount;
     _paidBy[me.id] = amount;
+    date = DateTime.now();
   }
 
   set amount(double amount) {
@@ -61,12 +64,52 @@ class Expense extends ChangeNotifier {
     return "";
   }
 
+  String getPaidByID() {
+    if (_paidBy[me.id] != null) {
+      return me.id;
+    }
+    for (final paidBy in _paidBy.keys) {
+      return paidBy;
+    }
+    return "";
+  }
+
+  String getPaidAmount() {
+    for (final paidValue in _paidBy.values) {
+      return paidValue.toStringAsFixed(2);
+    }
+    return "";
+  }
+
+  double getBorrowedAmount({String? id}) {
+    switch (_splitType) {
+      case SplitType.equal:
+        return isUserSelected(id ?? me.id) ? equalSpilt : 0;
+      case SplitType.amount:
+        return _amounts[id ?? me.id] ?? 0;
+      case SplitType.percentage:
+        return amount * (_percentages[id ?? me.id] ?? 0) / 100;
+      case SplitType.share:
+        return getUserShareAmount(id ?? me.id);
+      case SplitType.adjustment:
+        return getUserAdjustmentTotalAmount(id ?? me.id);
+    }
+  }
+
+  double getRemainingAmount({String? id}) =>
+      (_paidBy[id ?? me.id] ?? 0) - getBorrowedAmount(id: id);
+
+  String getFormattedRemainingAmount({String? id}) =>
+      getRemainingAmount(id: id).abs().toStringAsFixed(2);
+
   set splitType(SplitType splitType) {
     _splitType = splitType;
     notifyListeners();
   }
 
   SplitType get splitType => _splitType;
+
+  List<String> get selectedUsers => _selectedUsers;
 
   void selectUser(String userId) {
     _selectedUsers.add(userId);
@@ -95,8 +138,11 @@ class Expense extends ChangeNotifier {
 
   int get selectedUsersLength => _selectedUsers.length;
 
-  String get formattedEqualSplit =>
-      (amount / selectedUsersLength).toStringAsFixed(2);
+  double get equalSpilt => (amount / selectedUsersLength);
+
+  String get formattedEqualSplit => equalSpilt.toStringAsFixed(2);
+
+  Map<String, double> get amounts => _amounts;
 
   String? getUserAmount(String userId) {
     return _amounts[userId]?.toStringAsFixed(2);
@@ -119,6 +165,8 @@ class Expense extends ChangeNotifier {
       ? (amount - _amounts.values.reduce((a, b) => a + b)).toStringAsFixed(2)
       : amount.toStringAsFixed(2);
 
+  Map<String, double> get percentages => _percentages;
+
   String? getUserPercentage(String userId) {
     return _percentages[userId]?.toStringAsFixed(2);
   }
@@ -140,14 +188,17 @@ class Expense extends ChangeNotifier {
       ? (100 - _percentages.values.reduce((a, b) => a + b)).toStringAsFixed(2)
       : 100.toStringAsFixed(2);
 
+  Map<String, double> get shares => _shares;
+
   String? getUserShare(String userId) {
     return _shares[userId]?.toStringAsFixed(0);
   }
 
-  String? getUserShareAmount(String userId) {
-    return (((_shares[userId] ?? 0) * amount) / totalSharesNum)
-        .toStringAsFixed(2);
-  }
+  double getUserShareAmount(String userId) =>
+      (((_shares[userId] ?? 0) * amount) / totalSharesNum);
+
+  String? getFormattedUserShareAmount(String userId) =>
+      getUserShareAmount(userId).toStringAsFixed(2);
 
   void setShare(String userId, double? share) {
     if (share == null) {
@@ -163,18 +214,22 @@ class Expense extends ChangeNotifier {
 
   String get totalShares => totalSharesNum.toStringAsFixed(0);
 
+  Map<String, double> get adjustments => _adjustments;
+
   String? getUserAdjustment(String userId) {
     return _adjustments[userId]?.toStringAsFixed(2);
   }
 
-  String? getUserAdjustmentTotalAmount(String userId) {
+  double getUserAdjustmentTotalAmount(String userId) {
     final totalAdjustments = _adjustments.isNotEmpty
         ? _adjustments.values.reduce((a, b) => a + b)
         : 0;
     return (((amount - totalAdjustments) / users.length) +
-            (_adjustments[userId] ?? 0))
-        .toStringAsFixed(2);
+        (_adjustments[userId] ?? 0));
   }
+
+  String? getFormattedUserAdjustmentTotalAmount(String userId) =>
+      getUserAdjustmentTotalAmount(userId).toStringAsFixed(2);
 
   void setAdjustment(String userId, double? adjustment) {
     if (adjustment == null) {
