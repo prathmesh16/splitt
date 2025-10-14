@@ -1,40 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:splitt/common/custom_divider.dart';
-import 'package:splitt/common/models/expense.dart';
-import 'package:splitt/features/users/presentation/models/user.dart';
-import 'package:splitt/common/utils/constants.dart';
+import 'package:splitt/features/group/presentation/bloc/groups_bloc.dart';
+import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
-import 'package:splitt/features/users/presentation/bloc/users_bloc.dart';
 
-class UsersListScreen extends StatefulWidget {
-  const UsersListScreen({super.key});
+class GroupsListScreen extends StatefulWidget {
+  const GroupsListScreen({super.key});
 
   @override
-  State<UsersListScreen> createState() => _UsersListScreenState();
+  State<GroupsListScreen> createState() => _GroupsListScreenState();
 }
 
-class _UsersListScreenState extends State<UsersListScreen> {
-  late final UsersBloc usersBloc;
+class _GroupsListScreenState extends State<GroupsListScreen> {
+  late final GroupsBloc groupsBloc;
 
   @override
   void initState() {
     super.initState();
-    usersBloc = UsersBloc();
-    usersBloc.getAllUsers();
+    groupsBloc = GroupsBloc();
+    groupsBloc.getAllGroups();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (_) => usersBloc,
+        create: (_) => groupsBloc,
         child: BlocBuilder(
-          bloc: usersBloc,
+          bloc: groupsBloc,
           builder: (_, UIState state) {
             if (state is Success) {
-              return _UserList(users: state.data);
+              return _GroupsList(groups: state.data);
             }
             return const Center(child: CircularProgressIndicator());
           },
@@ -44,12 +41,12 @@ class _UsersListScreenState extends State<UsersListScreen> {
   }
 }
 
-class _UserList extends StatelessWidget {
-  final List<User> users;
+class _GroupsList extends StatelessWidget {
+  final List<Group> groups;
 
-  const _UserList({
+  const _GroupsList({
     super.key,
-    required this.users,
+    required this.groups,
   });
 
   @override
@@ -57,10 +54,10 @@ class _UserList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: ListView.separated(
-        itemCount: users.length,
+        itemCount: groups.length,
         itemBuilder: (_, index) {
-          return _UserTile(
-            user: users[index],
+          return _GroupTile(
+            group: groups[index],
           );
         },
         separatorBuilder: (_, index) {
@@ -74,12 +71,12 @@ class _UserList extends StatelessWidget {
   }
 }
 
-class _UserTile extends StatelessWidget {
-  final User user;
+class _GroupTile extends StatelessWidget {
+  final Group group;
 
-  const _UserTile({
+  const _GroupTile({
     super.key,
-    required this.user,
+    required this.group,
   });
 
   @override
@@ -118,7 +115,7 @@ class _UserTile extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           Text(
-            user.name,
+            group.name,
             style: const TextStyle(
               fontSize: 16,
             ),

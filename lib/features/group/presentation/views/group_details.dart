@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:splitt/common/models/expense.dart';
-import 'package:splitt/common/models/user.dart';
+import 'package:splitt/features/users/presentation/models/user.dart';
 import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/common/utils/date_time_extensions.dart';
 import 'package:splitt/common/utils/string_extensions.dart';
-import 'package:splitt/features/group/models/group_expense.dart';
+import 'package:splitt/features/group/presentation/models/group_expense.dart';
 import 'package:splitt/features/split/views/expense_provider.dart';
 import 'package:splitt/features/split/views/new_split.dart';
 

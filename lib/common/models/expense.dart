@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splitt/common/models/user.dart';
+import 'package:splitt/features/users/presentation/models/user.dart';
 import 'package:splitt/features/split/models/spilt_type.dart';
 
 class Expense extends ChangeNotifier {

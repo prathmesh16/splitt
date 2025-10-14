@@ -14,8 +14,8 @@ class Success<T> implements UIState<T> {
   const Success(this.data);
 }
 
-class Error<T> implements UIState<T> {
-  final Exception exception;
+class Failure<T> implements UIState<T> {
+  final Error error;
 
-  const Error(this.exception);
+  const Failure(this.error);
 }

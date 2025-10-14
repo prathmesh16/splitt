@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/models/expense.dart';
-import 'package:splitt/common/models/user.dart';
+import 'package:splitt/features/users/presentation/models/user.dart';
 import 'package:splitt/common/utils/constants.dart';
 
 class PaidBy extends StatelessWidget {

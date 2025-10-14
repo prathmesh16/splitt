@@ -5,6 +5,6 @@ import 'package:splitt/features/users/data/api/user_api_service.dart';
 class UserAPIServiceImpl extends BaseAPIService implements UserAPIService {
   @override
   Future<APIResponse> getAllUsers() async {
-    return await get('users');
+    return get('users');
   }
 }
