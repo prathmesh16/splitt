@@ -6,10 +6,12 @@ import 'package:splitt/features/expense/presentation/bloc/save_expense_bloc.dart
 
 class SaveButton extends StatefulWidget {
   final Function(SaveExpenseBloc)? onTap;
+  final VoidCallback? onSuccess;
 
   const SaveButton({
     super.key,
     this.onTap,
+    this.onSuccess,
   });
 
   @override
@@ -34,6 +36,7 @@ class _SaveButtonState extends State<SaveButton> {
           );
         }
         if (state is Success) {
+          widget.onSuccess?.call();
           Navigator.pop(context);
         }
       },

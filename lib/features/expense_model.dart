@@ -1,4 +1,5 @@
 import 'package:splitt/common/models/expense.dart';
+import 'package:splitt/common/utils/utils.dart';
 import 'package:splitt/features/group/data/models/group_model.dart';
 import 'package:splitt/features/split/models/spilt_type.dart';
 import 'package:splitt/features/users/data/models/user_model.dart';
@@ -73,8 +74,8 @@ class ExpenseModel {
           .map<String>((user) => user["userId"])
           .toList(),
       splitType: SplitType.fromString(json["splitType"]),
-      shares: (json['shares'] as Map<String, dynamic>)
-          .map((key, value) => MapEntry(key, (value as num).toDouble())),
+      shares: Utils.convertMapValuesToType<double>(json['shares']),
+      splitDetails: json["splitDetails"] ?? {},
     );
   }
 }

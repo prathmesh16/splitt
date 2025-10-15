@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:splitt/common/utils/utils.dart';
 import 'package:splitt/features/expense_model.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
@@ -10,10 +11,10 @@ class Expense extends ChangeNotifier {
   String name = "";
   double _amount = 0;
   late final List<String> _selectedUsers;
-  final Map<String, double> _amounts = {};
-  final Map<String, double> _percentages = {};
-  final Map<String, double> _shares = {};
-  final Map<String, double> _adjustments = {};
+  Map<String, double> _amounts = {};
+  Map<String, double> _percentages = {};
+  Map<String, double> _shares = {};
+  Map<String, double> _adjustments = {};
 
   Map<String, double> _paidBy = {};
   final User me = const User(
@@ -294,6 +295,25 @@ class Expense extends ChangeNotifier {
     }
   }
 
+  void _setSplitDetails(ExpenseModel expenseModel) {
+    switch (expenseModel.splitType) {
+      case SplitType.amount:
+        _amounts = Utils.convertMapValuesToType<double>(
+            expenseModel.splitDetails["amounts"] ?? {});
+      case SplitType.percentage:
+        _percentages = Utils.convertMapValuesToType<double>(
+            expenseModel.splitDetails["percentages"] ?? {});
+      case SplitType.share:
+        _shares = Utils.convertMapValuesToType<double>(
+            expenseModel.splitDetails["shares"] ?? {});
+      case SplitType.adjustment:
+        _adjustments = Utils.convertMapValuesToType<double>(
+            expenseModel.splitDetails["adjustments"] ?? {});
+      case SplitType.equal:
+        return;
+    }
+  }
+
   factory Expense.fromExpenseModel(ExpenseModel expenseModel) {
     return Expense(
       users: GroupUsersDataStore().users,
@@ -301,8 +321,9 @@ class Expense extends ChangeNotifier {
       amount: expenseModel.amount,
       selectedUsers: expenseModel.participantIds,
     )
-      .._amounts.addAll(expenseModel.shares)
       ..name = expenseModel.title
-      .._paidBy = {expenseModel.payerId: expenseModel.amount};
+      .._paidBy = {expenseModel.payerId: expenseModel.amount}
+      ..splitType = expenseModel.splitType
+      .._setSplitDetails(expenseModel);
   }
 }

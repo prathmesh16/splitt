@@ -57,7 +57,6 @@ class _NewSplitState extends State<NewSplit> {
                       final description = descriptionController.text;
                       final amount = double.tryParse(amountController.text);
                       if (description.isNotEmpty && amount != null) {
-                        widget.onSave.call();
                         saveExpenseBloc.saveExpense(context.read<Expense>());
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -68,6 +67,9 @@ class _NewSplitState extends State<NewSplit> {
                           ),
                         );
                       }
+                    },
+                    onSuccess: () {
+                      widget.onSave.call();
                     },
                   ),
                 ],
