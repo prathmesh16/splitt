@@ -15,8 +15,7 @@ class GroupModel {
 
   factory GroupModel.fromJson(Map<String, dynamic> json) {
     return GroupModel(
-      //TODO : change this when backend starts sending groupId as String
-      id: json["groupId"].toString() ?? "",
+      id: json["groupId"] ?? "",
       name: json["name"] ?? "",
       description: json["description"] ?? "",
       users: json["userList"] != null

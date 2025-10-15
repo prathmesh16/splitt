@@ -39,8 +39,7 @@ class ExpenseModel {
       "description": description,
       "amount": amount,
       "payerId": payerId,
-      //TODO : change this when backend starts sending groupId as String
-      "groupId": int.parse(groupId),
+      "groupId": groupId,
       "participantIds": participantIds,
       "splitType": splitType.backendValue,
       "splitDetails": splitDetails,

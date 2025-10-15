@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -48,14 +49,6 @@ class _GroupDetailsState extends State<GroupDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(Icons.arrow_back_ios_new_rounded),
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final newExpense = Expense(
@@ -81,54 +74,170 @@ class _GroupDetailsState extends State<GroupDetails> {
         },
         child: const Icon(Icons.sticky_note_2_outlined),
       ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 32,
-                vertical: 16,
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              expandedHeight: 100.0,
+              floating: false,
+              pinned: true,
+              stretch: true,
+              leading: InkWell(
+                onTap: () => Navigator.pop(context),
+                child: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...groupExpense.getRemainingAmounts().map((id, amount) {
-                    return MapEntry(
-                      id,
-                      Text(
-                        amount > 0
-                            ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you ₹${amount.toStringAsFixed(2)}"
-                            : "You owe ${users.firstWhere((user) => user.id == id).name} ₹${amount.abs().toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontSize: 12,
+              flexibleSpace: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  final double maxHeight = constraints.biggest.height;
+                  const double minHeight = kToolbarHeight;
+
+                  final double t =
+                      (maxHeight - minHeight - 24) / (100 - kToolbarHeight);
+                  final double targetOpacity = 1 - t.clamp(0.0, 1.0);
+
+                  return Stack(
+                    fit: StackFit.expand,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Image.network(
+                        "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
+                        fit: BoxFit.cover,
+                      ),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 40),
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween<double>(
+                              begin: targetOpacity,
+                              end: targetOpacity,
+                            ),
+                            duration: const Duration(milliseconds: 100),
+                            curve: Curves.easeInOutCubic,
+                            builder: (context, value, child) {
+                              return Opacity(
+                                opacity: value,
+                                child: child,
+                              );
+                            },
+                            child: Text(
+                              widget.group.name,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    );
-                  }).values,
-                ],
+                      Positioned(
+                        bottom: -30,
+                        left: 32,
+                        child: Opacity(
+                          opacity: t.clamp(0.0, 1.0),
+                          child: Container(
+                            height: 60,
+                            width: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Image.network(
+                                  "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
-            Expanded(
-              child: BlocConsumer(
-                  bloc: expensesBloc,
-                  listener: (_, state) {
-                    if (state is Success) {
-                      setState(() {
-                        groupExpense.savedExpenses = state.data.toList();
-                      });
-                    }
-                  },
-                  builder: (context, UIState state) {
-                    if (state is Success) {
-                      return _ExpenseList(
-                        savedExpenses: state.data,
+          ];
+        },
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.group.name,
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    if (groupExpense.getFinalRemainingAmount() != 0)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Text(
+                          groupExpense.getFinalRemainingAmount() > 0
+                              ? "You are owed ₹${groupExpense.getFinalRemainingAmount()} overall"
+                              : "You owe ₹${groupExpense.getFinalRemainingAmount().abs()} overall",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: groupExpense.getFinalRemainingAmount() > 0
+                                ? Constants.lentColor
+                                : Constants.borrowedColor,
+                          ),
+                        ),
+                      ),
+                    ...groupExpense.getRemainingAmounts().map((id, amount) {
+                      return MapEntry(
+                        id,
+                        Text(
+                          amount > 0
+                              ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you ₹${amount.toStringAsFixed(2)}"
+                              : "You owe ${users.firstWhere((user) => user.id == id).name} ₹${amount.abs().toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            fontSize: 12,
+                          ),
+                        ),
                       );
-                    }
-                    return const Center(child: CircularProgressIndicator());
-                  }),
-            ),
-          ],
+                    }).values,
+                  ],
+                ),
+              ),
+              Expanded(
+                child: BlocConsumer(
+                    bloc: expensesBloc,
+                    listener: (_, state) {
+                      if (state is Success) {
+                        setState(() {
+                          groupExpense.savedExpenses = state.data.toList();
+                        });
+                      }
+                    },
+                    builder: (context, UIState state) {
+                      if (state is Success) {
+                        return _ExpenseList(
+                          savedExpenses: state.data,
+                        );
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    }),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -149,6 +258,7 @@ class _ExpenseList extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: ListView.builder(
         itemCount: savedExpenses.length,
+        primary: false,
         itemBuilder: (_, index) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

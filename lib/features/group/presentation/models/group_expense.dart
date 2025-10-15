@@ -67,4 +67,12 @@ class GroupExpense {
     }
     return amounts..removeWhere((_, amount) => amount == 0);
   }
+
+  double getFinalRemainingAmount() {
+    final amounts = getRemainingAmounts();
+    if (amounts.isEmpty) {
+      return 0;
+    }
+    return amounts.values.reduce((a, b) => a + b);
+  }
 }

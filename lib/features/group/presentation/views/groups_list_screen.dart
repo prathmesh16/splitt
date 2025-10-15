@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitt/common/custom_divider.dart';
+import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/features/group/presentation/bloc/groups_bloc.dart';
 import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
@@ -86,8 +87,8 @@ class _GroupTile extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => GroupDetails(
+          slideFromRight(
+            GroupDetails(
               group: group,
             ),
           ),
