@@ -22,4 +22,9 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
     final expenses = response.data as List;
     return expenses.map((expense) => ExpenseModel.fromJson(expense)).toList();
   }
+
+  @override
+  Future deleteExpense(String expenseId) {
+    return _expenseAPIService.deleteExpense(expenseId);
+  }
 }

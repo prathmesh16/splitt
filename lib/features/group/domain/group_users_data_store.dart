@@ -1,4 +1,5 @@
 import 'package:splitt/features/users/presentation/models/user.dart';
+import 'package:collection/collection.dart';
 
 class GroupUsersDataStore {
   static final GroupUsersDataStore _instance = GroupUsersDataStore._();
@@ -15,5 +16,9 @@ class GroupUsersDataStore {
   void clearData() {
     users.clear();
     groupId = "";
+  }
+
+  User? getUser(String userId) {
+    return users.firstWhereOrNull((user) => user.id == userId);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/features/group/presentation/bloc/groups_bloc.dart';
@@ -103,29 +104,7 @@ class _GroupTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              height: 36,
-              width: 36,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Image.network(
-                "https://avatar.iran.liara.run/public/boy",
-                loadingBuilder: (_, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  }
-                  return Container(
-                    height: 36,
-                    width: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                  );
-                },
-              ),
-            ),
+            const Avatar(),
             const SizedBox(width: 16),
             Text(
               group.name,

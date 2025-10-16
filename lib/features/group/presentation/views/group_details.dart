@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:splitt/common/models/expense.dart';
+import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
 import 'package:splitt/features/expense/presentation/bloc/expenses_bloc.dart';
+import 'package:splitt/features/expense/presentation/views/expense_details.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
@@ -48,177 +50,180 @@ class _GroupDetailsState extends State<GroupDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final newExpense = Expense(
-            groupId: widget.group.id,
-            users: users,
-          );
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ExpenseProvider(
-                expense: newExpense,
-                child: NewSplit(
-                  onSave: () {
-                    setState(() {
-                      groupExpense.savedExpenses.add(newExpense);
-                    });
-                    expensesBloc.getGroupExpenses(widget.group.id);
-                  },
+    return BlocProvider(
+      create: (_) => expensesBloc,
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            final newExpense = Expense(
+              groupId: widget.group.id,
+              users: users,
+            );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ExpenseProvider(
+                  expense: newExpense,
+                  child: NewSplit(
+                    onSave: () {
+                      setState(() {
+                        groupExpense.savedExpenses.add(newExpense);
+                      });
+                      expensesBloc.getGroupExpenses(widget.group.id);
+                    },
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-        child: const Icon(Icons.sticky_note_2_outlined),
-      ),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              expandedHeight: 100.0,
-              floating: false,
-              pinned: true,
-              stretch: true,
-              leading: InkWell(
-                onTap: () => Navigator.pop(context),
-                child: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: Colors.white,
-                  size: 20,
+            );
+          },
+          child: const Icon(Icons.sticky_note_2_outlined),
+        ),
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                expandedHeight: 100.0,
+                floating: false,
+                pinned: true,
+                stretch: true,
+                leading: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
-              ),
-              flexibleSpace: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  final double maxHeight = constraints.biggest.height;
-                  const double minHeight = kToolbarHeight;
+                flexibleSpace: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    final double maxHeight = constraints.biggest.height;
+                    const double minHeight = kToolbarHeight;
 
-                  final double t =
-                      (maxHeight - minHeight - 24) / (100 - kToolbarHeight);
-                  final double targetOpacity = 1 - t.clamp(0.0, 1.0);
+                    final double t =
+                        (maxHeight - minHeight - 24) / (100 - kToolbarHeight);
+                    final double targetOpacity = 1 - t.clamp(0.0, 1.0);
 
-                  return Stack(
-                    fit: StackFit.expand,
-                    clipBehavior: Clip.none,
-                    children: [
-                      Image.network(
-                        "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
-                        fit: BoxFit.cover,
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 40),
-                          child: TweenAnimationBuilder<double>(
-                            tween: Tween<double>(
-                              begin: targetOpacity,
-                              end: targetOpacity,
-                            ),
-                            duration: const Duration(milliseconds: 100),
-                            curve: Curves.easeInOutCubic,
-                            builder: (context, value, child) {
-                              return Opacity(
-                                opacity: value,
-                                child: child,
-                              );
-                            },
-                            child: Text(
-                              widget.group.name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
+                    return Stack(
+                      fit: StackFit.expand,
+                      clipBehavior: Clip.none,
+                      children: [
+                        Image.network(
+                          "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
+                          fit: BoxFit.cover,
                         ),
-                      ),
-                      Positioned(
-                        bottom: -30,
-                        left: 32,
-                        child: Opacity(
-                          opacity: t.clamp(0.0, 1.0),
-                          child: Container(
-                            height: 60,
-                            width: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: Image.network(
-                                  "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
-                                  fit: BoxFit.cover,
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 40),
+                            child: TweenAnimationBuilder<double>(
+                              tween: Tween<double>(
+                                begin: targetOpacity,
+                                end: targetOpacity,
+                              ),
+                              duration: const Duration(milliseconds: 100),
+                              curve: Curves.easeInOutCubic,
+                              builder: (context, value, child) {
+                                return Opacity(
+                                  opacity: value,
+                                  child: child,
+                                );
+                              },
+                              child: Text(
+                                widget.group.name,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ];
-        },
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.group.name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                      if (groupExpense.getFinalRemainingAmount() != 0)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Text(
-                            groupExpense.getFinalRemainingAmount() > 0
-                                ? "You are owed ₹${groupExpense.getFinalRemainingAmount().toStringAsFixed(2)} overall"
-                                : "You owe ₹${groupExpense.getFinalRemainingAmount().abs().toStringAsFixed(2)} overall",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: groupExpense.getFinalRemainingAmount() > 0
-                                  ? Constants.lentColor
-                                  : Constants.borrowedColor,
+                        Positioned(
+                          bottom: -30,
+                          left: 32,
+                          child: Opacity(
+                            opacity: t.clamp(0.0, 1.0),
+                            child: Container(
+                              height: 60,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Image.network(
+                                    "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ...groupExpense.getRemainingAmounts().map((id, amount) {
-                        return MapEntry(
-                          id,
-                          Text(
-                            amount > 0
-                                ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you ₹${amount.toStringAsFixed(2)}"
-                                : "You owe ${users.firstWhere((user) => user.id == id).name} ₹${amount.abs().toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontSize: 12,
-                            ),
-                          ),
-                        );
-                      }).values,
-                    ],
-                  ),
+                      ],
+                    );
+                  },
                 ),
-                BlocConsumer(
+              ),
+            ];
+          },
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.group.name,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                        if (groupExpense.getFinalRemainingAmount() != 0)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Text(
+                              groupExpense.getFinalRemainingAmount() > 0
+                                  ? "You are owed ₹${groupExpense.getFinalRemainingAmount().toStringAsFixed(2)} overall"
+                                  : "You owe ₹${groupExpense.getFinalRemainingAmount().abs().toStringAsFixed(2)} overall",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color:
+                                    groupExpense.getFinalRemainingAmount() > 0
+                                        ? Constants.lentColor
+                                        : Constants.borrowedColor,
+                              ),
+                            ),
+                          ),
+                        ...groupExpense.getRemainingAmounts().map((id, amount) {
+                          return MapEntry(
+                            id,
+                            Text(
+                              amount > 0
+                                  ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you ₹${amount.toStringAsFixed(2)}"
+                                  : "You owe ${users.firstWhere((user) => user.id == id).name} ₹${amount.abs().toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                fontSize: 12,
+                              ),
+                            ),
+                          );
+                        }).values,
+                      ],
+                    ),
+                  ),
+                  BlocConsumer(
                     bloc: expensesBloc,
                     listener: (_, state) {
                       if (state is Success) {
@@ -234,8 +239,10 @@ class _GroupDetailsState extends State<GroupDetails> {
                         );
                       }
                       return const Center(child: CircularProgressIndicator());
-                    }),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -301,86 +308,100 @@ class _ExpenseItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final remainingAmount = expense.getRemainingAmount();
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
-        horizontal: 8,
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 24,
-            child: Column(
+    return InkWell(
+      onTap: () async {
+        final expensesBloc = context.read<ExpensesBloc>();
+        final res = await Navigator.push(
+          context,
+          slideFromRight(
+            ExpenseDetails(expense: expense),
+          ),
+        );
+        if (res != null) {
+          expensesBloc.getGroupExpenses(expense.groupId);
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+          horizontal: 8,
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 24,
+              child: Column(
+                children: [
+                  Text(
+                    DateFormat("MMM").format(expense.date),
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    DateFormat("dd").format(expense.date),
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              height: 36,
+              width: 36,
+              color: Colors.blueGrey[100],
+              child: const Icon(Icons.event_note_outlined),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(expense.name),
                 Text(
-                  DateFormat("MMM").format(expense.date),
+                  remainingAmount != 0
+                      ? "${expense.getPaidBy().capitalize()} paid ₹${expense.getPaidAmount()}"
+                      : "You were not involved",
                   style: const TextStyle(
                     color: Colors.grey,
-                    fontSize: 12,
+                    fontSize: 10,
                   ),
-                ),
-                Text(
-                  DateFormat("dd").format(expense.date),
-                  style: const TextStyle(color: Colors.grey),
                 ),
               ],
             ),
-          ),
-          const SizedBox(width: 12),
-          Container(
-            height: 36,
-            width: 36,
-            color: Colors.blueGrey[100],
-            child: const Icon(Icons.event_note_outlined),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(expense.name),
-              Text(
-                remainingAmount != 0
-                    ? "${expense.getPaidBy().capitalize()} paid ₹${expense.getPaidAmount()}"
-                    : "You were not involved",
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 10,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                remainingAmount > 0
-                    ? "you lent"
-                    : remainingAmount < 0
-                        ? "you borrowed"
-                        : "not involved",
-                style: TextStyle(
-                  color: remainingAmount > 0
-                      ? Constants.lentColor
-                      : remainingAmount < 0
-                          ? Constants.borrowedColor
-                          : Colors.grey,
-                  fontSize: 10,
-                ),
-              ),
-              if (remainingAmount != 0)
+            const Spacer(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 Text(
-                  "₹${expense.getFormattedRemainingAmount()}",
+                  remainingAmount > 0
+                      ? "you lent"
+                      : remainingAmount < 0
+                          ? "you borrowed"
+                          : "not involved",
                   style: TextStyle(
                     color: remainingAmount > 0
                         ? Constants.lentColor
-                        : Constants.borrowedColor,
+                        : remainingAmount < 0
+                            ? Constants.borrowedColor
+                            : Colors.grey,
+                    fontSize: 10,
                   ),
                 ),
-            ],
-          ),
-        ],
+                if (remainingAmount != 0)
+                  Text(
+                    "₹${expense.getFormattedRemainingAmount()}",
+                    style: TextStyle(
+                      color: remainingAmount > 0
+                          ? Constants.lentColor
+                          : Constants.borrowedColor,
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

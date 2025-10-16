@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:splitt/common/utils/utils.dart';
 import 'package:splitt/features/expense_model.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
@@ -6,6 +7,7 @@ import 'package:splitt/features/users/presentation/models/user.dart';
 import 'package:splitt/features/split/models/spilt_type.dart';
 
 class Expense extends ChangeNotifier {
+  String? id;
   final List<User> users;
   late SplitType _splitType;
   String name = "";
@@ -24,9 +26,16 @@ class Expense extends ChangeNotifier {
   late final DateTime date;
   final String groupId;
 
+  //TODO : replace with current user when auth is ready
+  final User createdBy = const User(
+    id: "u100",
+    name: "Alice",
+  );
+
   Expense({
     required this.users,
     required this.groupId,
+    this.id,
     double amount = 0,
     List<String>? selectedUsers,
   }) {
@@ -101,6 +110,9 @@ class Expense extends ChangeNotifier {
         return getUserAdjustmentTotalAmount(id ?? me.id);
     }
   }
+
+  String getFormattedBorrowedAmount({String? id}) =>
+      getBorrowedAmount(id: id).abs().toStringAsFixed(2);
 
   double getRemainingAmount({String? id}) =>
       (_paidBy[id ?? me.id] ?? 0) - getBorrowedAmount(id: id);
@@ -316,6 +328,7 @@ class Expense extends ChangeNotifier {
 
   factory Expense.fromExpenseModel(ExpenseModel expenseModel) {
     return Expense(
+      id: expenseModel.id,
       users: GroupUsersDataStore().users,
       groupId: expenseModel.groupId,
       amount: expenseModel.amount,
@@ -325,5 +338,13 @@ class Expense extends ChangeNotifier {
       .._paidBy = {expenseModel.payerId: expenseModel.amount}
       ..splitType = expenseModel.splitType
       .._setSplitDetails(expenseModel);
+  }
+
+  String getFormattedDate([String format = "dd MMMM yyyy"]) {
+    return DateFormat(format).format(date);
+  }
+
+  String getFormattedAmount() {
+    return amount.toStringAsFixed(2);
   }
 }

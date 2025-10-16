@@ -5,4 +5,6 @@ abstract class ExpenseAPIService {
   Future<APIResponse> saveExpense(ExpenseModel expense);
 
   Future<APIResponse> getGroupExpenses(String groupId);
+
+  Future<APIResponse> deleteExpense(String expenseId);
 }

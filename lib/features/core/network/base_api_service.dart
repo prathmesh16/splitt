@@ -46,6 +46,22 @@ class BaseAPIService {
     return _handleResponse(response);
   }
 
+  Future<APIResponse> delete(
+    String endpoint, {
+    Map<String, String>? headers,
+  }) async {
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final response = await http.delete(
+      uri,
+      headers: {
+        ...defaultHeaders,
+        ...?headers,
+      },
+    );
+
+    return _handleResponse(response);
+  }
+
   APIResponse _handleResponse(http.Response response) {
     final statusCode = response.statusCode;
     final apiResponse = APIResponse(statusCode: statusCode);
@@ -53,6 +69,7 @@ class BaseAPIService {
     switch (statusCode) {
       case 200:
       case 201:
+      case 204:
         apiResponse.data = body;
       default:
         throw Exception();

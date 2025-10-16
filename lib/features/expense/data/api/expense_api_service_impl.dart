@@ -14,4 +14,9 @@ class ExpenseApiServiceImpl extends BaseAPIService
   Future<APIResponse> getGroupExpenses(String groupId) {
     return get('expenses/group/$groupId');
   }
+
+  @override
+  Future<APIResponse> deleteExpense(String expenseId) {
+    return delete("expenses/$expenseId");
+  }
 }
