@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/group/presentation/views/group_details.dart';
 import 'package:splitt/features/group/presentation/views/groups_list_screen.dart';
+import 'package:splitt/features/home_screen.dart';
 import 'package:splitt/features/split/views/split_screen.dart';
 import 'package:splitt/features/users/presentation/views/users_list_screen.dart';
 
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Constants.primaryColor),
         useMaterial3: true,
       ),
-      home: const GroupsListScreen(),
+      home: const HomeScreen(),
     );
   }
 }
