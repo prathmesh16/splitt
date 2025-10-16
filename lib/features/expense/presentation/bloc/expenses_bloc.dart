@@ -18,7 +18,7 @@ class ExpensesBloc extends Cubit<UIState<List<Expense>>> {
       final expenses = await _expenseRepository.getGroupExpenses(groupId);
       final expenseList =
           expenses.map((expense) => Expense.fromExpenseModel(expense)).toList();
-      emit(Success(expenseList));
+      emit(Success(expenseList.reversed.toList()));
     } catch (e) {
       emit(Failure(e as Error));
     }

@@ -168,57 +168,57 @@ class _GroupDetailsState extends State<GroupDetails> {
           ];
         },
         body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 16,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.group.name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    if (groupExpense.getFinalRemainingAmount() != 0)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Text(
-                          groupExpense.getFinalRemainingAmount() > 0
-                              ? "You are owed ₹${groupExpense.getFinalRemainingAmount()} overall"
-                              : "You owe ₹${groupExpense.getFinalRemainingAmount().abs()} overall",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: groupExpense.getFinalRemainingAmount() > 0
-                                ? Constants.lentColor
-                                : Constants.borrowedColor,
-                          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.group.name,
+                        style: const TextStyle(
+                          fontSize: 18,
                         ),
                       ),
-                    ...groupExpense.getRemainingAmounts().map((id, amount) {
-                      return MapEntry(
-                        id,
-                        Text(
-                          amount > 0
-                              ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you ₹${amount.toStringAsFixed(2)}"
-                              : "You owe ${users.firstWhere((user) => user.id == id).name} ₹${amount.abs().toStringAsFixed(2)}",
-                          style: const TextStyle(
-                            fontSize: 12,
+                      if (groupExpense.getFinalRemainingAmount() != 0)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Text(
+                            groupExpense.getFinalRemainingAmount() > 0
+                                ? "You are owed ₹${groupExpense.getFinalRemainingAmount().toStringAsFixed(2)} overall"
+                                : "You owe ₹${groupExpense.getFinalRemainingAmount().abs().toStringAsFixed(2)} overall",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: groupExpense.getFinalRemainingAmount() > 0
+                                  ? Constants.lentColor
+                                  : Constants.borrowedColor,
+                            ),
                           ),
                         ),
-                      );
-                    }).values,
-                  ],
+                      ...groupExpense.getRemainingAmounts().map((id, amount) {
+                        return MapEntry(
+                          id,
+                          Text(
+                            amount > 0
+                                ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you ₹${amount.toStringAsFixed(2)}"
+                                : "You owe ${users.firstWhere((user) => user.id == id).name} ₹${amount.abs().toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              fontSize: 12,
+                            ),
+                          ),
+                        );
+                      }).values,
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: BlocConsumer(
+                BlocConsumer(
                     bloc: expensesBloc,
                     listener: (_, state) {
                       if (state is Success) {
@@ -235,8 +235,8 @@ class _GroupDetailsState extends State<GroupDetails> {
                       }
                       return const Center(child: CircularProgressIndicator());
                     }),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -259,6 +259,8 @@ class _ExpenseList extends StatelessWidget {
       child: ListView.builder(
         itemCount: savedExpenses.length,
         primary: false,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (_, index) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
