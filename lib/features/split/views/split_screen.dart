@@ -6,14 +6,18 @@ import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/split/views/adjustment_split.dart';
 import 'package:splitt/features/split/views/amount_split.dart';
 import 'package:splitt/features/split/views/equal_split.dart';
-import 'package:splitt/features/split/views/expense_provider.dart';
 import 'package:splitt/features/split/models/spilt_type.dart';
 import 'package:collection/collection.dart' show ListExtensions;
 import 'package:splitt/features/split/views/percentage_split.dart';
 import 'package:splitt/features/split/views/share_split.dart';
 
 class SplitScreen extends StatefulWidget {
-  const SplitScreen({super.key});
+  final VoidCallback onDone;
+
+  const SplitScreen({
+    super.key,
+    required this.onDone,
+  });
 
   @override
   State<SplitScreen> createState() => _SplitScreenState();
@@ -77,6 +81,7 @@ class _SplitScreenState extends State<SplitScreen>
                   InkWell(
                     onTap: () {
                       Navigator.pop(context);
+                      widget.onDone.call();
                     },
                     child: const Text(
                       "Done",
@@ -97,80 +102,75 @@ class _SplitScreenState extends State<SplitScreen>
                     color: Colors.grey[200],
                   ),
                   Expanded(
-                    child: ExpenseProvider(
-                      expense: _expense,
-                      child: Consumer<Expense>(
-                        builder: (context, expense, _) {
-                          return Column(
-                            children: [
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: SplitType.values
-                                    .mapIndexed(
-                                      (index, type) => Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 4),
-                                        child: InkWell(
-                                          onTap: () {
-                                            _tabController.animateTo(index);
-                                            expense.splitType = type;
-                                          },
-                                          child: Container(
-                                            width: 66,
-                                            height: 28,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: _isTabSelected(type)
-                                                  ? Constants.primaryColor
-                                                  : null,
-                                              border: Border.all(
-                                                color: const Color(0xFFacb0af),
-                                              ),
+                    child: Consumer<Expense>(
+                      builder: (context, expense, _) {
+                        return Column(
+                          children: [
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: SplitType.values
+                                  .mapIndexed(
+                                    (index, type) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4),
+                                      child: InkWell(
+                                        onTap: () {
+                                          _tabController.animateTo(index);
+                                          expense.splitType = type;
+                                        },
+                                        child: Container(
+                                          width: 66,
+                                          height: 28,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: _isTabSelected(type)
+                                                ? Constants.primaryColor
+                                                : null,
+                                            border: Border.all(
+                                              color: const Color(0xFFacb0af),
                                             ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 16,
-                                                vertical: 2,
-                                              ),
-                                              child: type.tab,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 2,
                                             ),
+                                            child: type.tab,
                                           ),
                                         ),
                                       ),
-                                    )
-                                    .toList(),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                            Expanded(
+                              child: TabBarView(
+                                controller: _tabController,
+                                children: [
+                                  EqualSplit(
+                                    users: _expense.users,
+                                  ),
+                                  AmountSplit(
+                                    users: _expense.users,
+                                  ),
+                                  PercentageSplit(
+                                    users: _expense.users,
+                                  ),
+                                  ShareSplit(
+                                    users: _expense.users,
+                                  ),
+                                  AdjustmentSplit(
+                                    users: _expense.users,
+                                  ),
+                                ],
                               ),
-                              Expanded(
-                                child: TabBarView(
-                                  controller: _tabController,
-                                  children: [
-                                    EqualSplit(
-                                      users: _expense.users,
-                                    ),
-                                    AmountSplit(
-                                      users: _expense.users,
-                                    ),
-                                    PercentageSplit(
-                                      users: _expense.users,
-                                    ),
-                                    ShareSplit(
-                                      users: _expense.users,
-                                    ),
-                                    AdjustmentSplit(
-                                      users: _expense.users,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ],

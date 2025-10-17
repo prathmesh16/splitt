@@ -4,27 +4,51 @@ import 'package:splitt/common/elevated_widget.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/common/utils/constants.dart';
-import 'package:splitt/features/expense/presentation/bloc/save_expense_bloc.dart';
+import 'package:splitt/features/expense/presentation/bloc/expense_bloc.dart';
 import 'package:splitt/features/expense/presentation/views/save_button.dart';
 import 'package:splitt/features/split/views/expense_provider.dart';
 import 'package:splitt/features/split/views/paid_by.dart';
 import 'package:splitt/features/split/views/split_screen.dart';
 
-class NewSplit extends StatefulWidget {
+class AddEditExpenseScreen extends StatefulWidget {
   final VoidCallback onSave;
+  final ExpenseBloc expenseBloc;
 
-  const NewSplit({
+  const AddEditExpenseScreen({
     super.key,
     required this.onSave,
+    required this.expenseBloc,
   });
 
   @override
-  State<NewSplit> createState() => _NewSplitState();
+  State<AddEditExpenseScreen> createState() => _AddEditExpenseScreenState();
 }
 
-class _NewSplitState extends State<NewSplit> {
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController amountController = TextEditingController();
+class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
+  late final TextEditingController nameController;
+  late final FocusNode nameFocusNode;
+  late final FocusNode amountFocusNode;
+  late final TextEditingController amountController;
+
+  @override
+  void initState() {
+    super.initState();
+    final expense = context.read<Expense>();
+    nameController = TextEditingController(text: expense.name);
+    nameFocusNode = FocusNode();
+    amountFocusNode = FocusNode();
+    amountController = TextEditingController(
+      text: expense.amount != 0 ? expense.amount.toString() : null,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (expense.name.isNotEmpty) {
+        amountFocusNode.requestFocus();
+      } else {
+        nameFocusNode.requestFocus();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,18 +70,19 @@ class _NewSplitState extends State<NewSplit> {
                     },
                     child: const Icon(Icons.close),
                   ),
-                  const Text(
-                    "Add an expense",
-                    style: TextStyle(
+                  Text(
+                    widget.expenseBloc.screenName,
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                   ),
                   SaveButton(
-                    onTap: (SaveExpenseBloc saveExpenseBloc) {
-                      final description = descriptionController.text;
+                    expenseBloc: widget.expenseBloc,
+                    onTap: () {
+                      final description = nameController.text;
                       final amount = double.tryParse(amountController.text);
                       if (description.isNotEmpty && amount != null) {
-                        saveExpenseBloc.saveExpense(context.read<Expense>());
+                        widget.expenseBloc.saveExpense(context.read<Expense>());
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -95,7 +120,8 @@ class _NewSplitState extends State<NewSplit> {
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 8),
                               child: TextField(
-                                controller: descriptionController,
+                                focusNode: nameFocusNode,
+                                controller: nameController,
                                 decoration: InputDecoration(
                                   hintText: "Enter a description",
                                   hintStyle: TextStyle(
@@ -133,6 +159,7 @@ class _NewSplitState extends State<NewSplit> {
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 8),
                               child: TextField(
+                                focusNode: amountFocusNode,
                                 controller: amountController,
                                 decoration: InputDecoration(
                                   hintText: "0.00",
@@ -208,12 +235,20 @@ class _NewSplitState extends State<NewSplit> {
                               onTap: () {
                                 final amount = amountController.text;
                                 if ((num.tryParse(amount) ?? 0) > 0) {
+                                  final expenseCopy = expense.copy();
                                   Navigator.push(
                                     context,
                                     slideFromBottom(
                                       ExpenseProvider(
-                                        expense: expense,
-                                        child: const SplitScreen(),
+                                        expense: expenseCopy,
+                                        child: SplitScreen(
+                                          onDone: () {
+                                            setState(() {
+                                              expense
+                                                  .updateExpense(expenseCopy);
+                                            });
+                                          },
+                                        ),
                                       ),
                                     ),
                                   );

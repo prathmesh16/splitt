@@ -36,7 +36,6 @@ class _DeleteButtonState extends State<DeleteButton> {
         }
         if (state is Success) {
           widget.onSuccess?.call();
-          Navigator.pop(context, true);
         }
       },
       builder: (_, UIState state) {

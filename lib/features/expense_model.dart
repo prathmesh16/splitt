@@ -48,6 +48,7 @@ class ExpenseModel {
 
   factory ExpenseModel.fromExpense(Expense expense) {
     return ExpenseModel(
+      id: expense.id,
       title: expense.name,
       description: expense.name,
       amount: expense.amount,

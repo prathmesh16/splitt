@@ -11,6 +11,11 @@ class ExpenseApiServiceImpl extends BaseAPIService
   }
 
   @override
+  Future<APIResponse> editExpense(ExpenseModel expense) {
+    return put('expenses/${expense.id}', body: expense.toJson());
+  }
+
+  @override
   Future<APIResponse> getGroupExpenses(String groupId) {
     return get('expenses/group/$groupId');
   }

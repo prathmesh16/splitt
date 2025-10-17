@@ -347,4 +347,34 @@ class Expense extends ChangeNotifier {
   String getFormattedAmount() {
     return amount.toStringAsFixed(2);
   }
+
+  Expense copy() {
+    return Expense(
+      id: id,
+      users: GroupUsersDataStore().users,
+      groupId: groupId,
+      amount: amount,
+      selectedUsers: selectedUsers.toList(),
+    )
+      ..name = name
+      .._paidBy.clear()
+      .._paidBy.addAll(_paidBy)
+      ..splitType = splitType
+      .._amounts.addAll(_amounts)
+      .._percentages.addAll(_percentages)
+      .._shares.addAll(_shares)
+      .._adjustments.addAll(_adjustments);
+  }
+
+  void updateExpense(Expense expense) {
+    _selectedUsers.clear();
+    _selectedUsers.addAll(expense.selectedUsers);
+    name = expense.name;
+    _paidBy = expense._paidBy;
+    splitType = expense.splitType;
+    _amounts = expense._amounts;
+    _percentages = expense._percentages;
+    _shares = expense._shares;
+    _adjustments = expense._adjustments;
+  }
 }

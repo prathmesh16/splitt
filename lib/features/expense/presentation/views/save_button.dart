@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
-import 'package:splitt/features/expense/presentation/bloc/save_expense_bloc.dart';
+import 'package:splitt/features/expense/presentation/bloc/expense_bloc.dart';
 
 class SaveButton extends StatefulWidget {
-  final Function(SaveExpenseBloc)? onTap;
+  final ExpenseBloc expenseBloc;
+  final VoidCallback? onTap;
   final VoidCallback? onSuccess;
 
   const SaveButton({
     super.key,
+    required this.expenseBloc,
     this.onTap,
     this.onSuccess,
   });
@@ -19,12 +21,10 @@ class SaveButton extends StatefulWidget {
 }
 
 class _SaveButtonState extends State<SaveButton> {
-  final saveExpenseBloc = SaveExpenseBloc();
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer(
-      bloc: saveExpenseBloc,
+      bloc: widget.expenseBloc,
       listener: (_, UIState state) {
         if (state is Error) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -51,7 +51,7 @@ class _SaveButtonState extends State<SaveButton> {
           );
         }
         return _SaveButton(
-          onTap: () => widget.onTap?.call(saveExpenseBloc),
+          onTap: widget.onTap,
         );
       },
     );

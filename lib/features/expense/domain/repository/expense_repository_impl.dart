@@ -17,6 +17,11 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
   }
 
   @override
+  Future editExpense(Expense expense) {
+    return _expenseAPIService.editExpense(ExpenseModel.fromExpense(expense));
+  }
+
+  @override
   Future<List<ExpenseModel>> getGroupExpenses(String groupId) async {
     final response = await _expenseAPIService.getGroupExpenses(groupId);
     final expenses = response.data as List;

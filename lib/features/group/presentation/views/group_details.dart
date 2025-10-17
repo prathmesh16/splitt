@@ -6,6 +6,7 @@ import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
 import 'package:splitt/features/expense/presentation/bloc/expenses_bloc.dart';
+import 'package:splitt/features/expense/presentation/bloc/save_expense_bloc.dart';
 import 'package:splitt/features/expense/presentation/views/expense_details.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/group/presentation/models/group.dart';
@@ -15,7 +16,7 @@ import 'package:splitt/common/utils/date_time_extensions.dart';
 import 'package:splitt/common/utils/string_extensions.dart';
 import 'package:splitt/features/group/presentation/models/group_expense.dart';
 import 'package:splitt/features/split/views/expense_provider.dart';
-import 'package:splitt/features/split/views/new_split.dart';
+import 'package:splitt/features/expense/presentation/views/add_edit_expense_screen.dart';
 
 class GroupDetails extends StatefulWidget {
   final Group group;
@@ -64,7 +65,8 @@ class _GroupDetailsState extends State<GroupDetails> {
               MaterialPageRoute(
                 builder: (_) => ExpenseProvider(
                   expense: newExpense,
-                  child: NewSplit(
+                  child: AddEditExpenseScreen(
+                    expenseBloc: SaveExpenseBloc(),
                     onSave: () {
                       setState(() {
                         groupExpense.savedExpenses.add(newExpense);

@@ -46,6 +46,23 @@ class BaseAPIService {
     return _handleResponse(response);
   }
 
+  Future<APIResponse> put(
+    String endpoint, {
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final response = await http.put(
+      uri,
+      headers: {
+        ...defaultHeaders,
+        ...?headers,
+      },
+      body: jsonEncode(body),
+    );
+    return _handleResponse(response);
+  }
+
   Future<APIResponse> delete(
     String endpoint, {
     Map<String, String>? headers,
@@ -72,6 +89,7 @@ class BaseAPIService {
       case 204:
         apiResponse.data = body;
       default:
+        print(statusCode);
         throw Exception();
     }
     return apiResponse;
