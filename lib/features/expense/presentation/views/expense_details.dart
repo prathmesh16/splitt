@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/elevated_widget.dart';
 import 'package:splitt/common/models/expense.dart';
+import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/common/utils/string_extensions.dart';
 import 'package:splitt/features/expense/presentation/bloc/edit_expense_bloc.dart';
 import 'package:splitt/features/expense/presentation/views/add_edit_expense_screen.dart';
 import 'package:splitt/features/expense/presentation/views/delete_button.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
+import 'package:splitt/features/settle_up/presentation/views/record_payment_screen.dart';
 import 'package:splitt/features/split/views/expense_provider.dart';
 
 class ExpenseDetails extends StatefulWidget {
@@ -77,9 +79,24 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (_) {
+                              slideFromBottom(
+                                () {
                                   final expense = widget.expense.copy();
+                                  if (expense.isSettleUp) {
+                                    return RecordPaymentScreen(
+                                      expense: expense,
+                                      amount: expense.amount,
+                                      user: expense.getSettlementUser()!,
+                                      groupId: expense.groupId,
+                                      expenseBloc: EditExpenseBloc(),
+                                      onSave: () {
+                                        setState(() {
+                                          isExpenseEdited = true;
+                                          widget.expense.updateExpense(expense);
+                                        });
+                                      },
+                                    );
+                                  }
                                   return ExpenseProvider(
                                     expense: expense,
                                     child: AddEditExpenseScreen(
@@ -92,7 +109,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                       },
                                     ),
                                   );
-                                },
+                                }(),
                               ),
                             );
                           },
@@ -118,7 +135,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         size: 36,
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Column(

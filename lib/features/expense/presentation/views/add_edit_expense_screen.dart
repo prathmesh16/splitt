@@ -95,6 +95,7 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                     },
                     onSuccess: () {
                       widget.onSave.call();
+                      Navigator.pop(context);
                     },
                   ),
                 ],

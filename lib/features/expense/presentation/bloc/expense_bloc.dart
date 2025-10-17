@@ -21,7 +21,9 @@ abstract class ExpenseBloc extends Cubit<UIState> {
     try {
       await saveExpenseToAPI(expense);
       emit(const Success(true));
-    } catch (e) {
+    } catch (e, s) {
+      print(e);
+      print(s);
       emit(Failure(e as Error));
     }
   }

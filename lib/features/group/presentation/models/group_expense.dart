@@ -1,17 +1,17 @@
 import 'package:splitt/common/models/expense.dart';
+import 'package:splitt/features/users/domain/user_data_store.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
 
 class GroupExpense {
   List<Expense> savedExpenses;
+  final String groupId;
 
   GroupExpense({
     required this.savedExpenses,
+    required this.groupId,
   });
 
-  final User me = const User(
-    id: "u100",
-    name: "Alice",
-  );
+  final User me = UserDataStore().me;
 
   Map<String, double> getRemainingAmounts() {
     final Map<String, double> amounts = {};

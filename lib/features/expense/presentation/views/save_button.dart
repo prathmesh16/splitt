@@ -37,7 +37,6 @@ class _SaveButtonState extends State<SaveButton> {
         }
         if (state is Success) {
           widget.onSuccess?.call();
-          Navigator.pop(context);
         }
       },
       builder: (_, UIState state) {

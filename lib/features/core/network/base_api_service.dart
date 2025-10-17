@@ -89,7 +89,6 @@ class BaseAPIService {
       case 204:
         apiResponse.data = body;
       default:
-        print(statusCode);
         throw Exception();
     }
     return apiResponse;

@@ -17,6 +17,7 @@ class ExpenseModel {
   final SplitType splitType;
   final Map<String, dynamic> splitDetails;
   final Map<String, double> shares;
+  final bool isSettleUp;
 
   ExpenseModel({
     this.id,
@@ -31,6 +32,7 @@ class ExpenseModel {
     required this.splitType,
     this.splitDetails = const {},
     this.shares = const {},
+    this.isSettleUp = false,
   });
 
   Map<String, dynamic> toJson() {
@@ -43,6 +45,7 @@ class ExpenseModel {
       "participantIds": participantIds,
       "splitType": splitType.backendValue,
       "splitDetails": splitDetails,
+      "isSettleUp": isSettleUp,
     };
   }
 
@@ -57,6 +60,7 @@ class ExpenseModel {
       participantIds: expense.getIncludedIds(),
       splitType: expense.splitType,
       splitDetails: expense.getSplitDetails(),
+      isSettleUp: expense.isSettleUp,
     );
   }
 
@@ -76,6 +80,7 @@ class ExpenseModel {
       splitType: SplitType.fromString(json["splitType"]),
       shares: Utils.convertMapValuesToType<double>(json['shares']),
       splitDetails: json["splitDetails"] ?? {},
+      isSettleUp: json["isSettleUp"] ?? false,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:splitt/common/utils/utils.dart';
 import 'package:splitt/features/expense_model.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
+import 'package:splitt/features/users/domain/user_data_store.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
 import 'package:splitt/features/split/models/spilt_type.dart';
 
@@ -19,18 +20,14 @@ class Expense extends ChangeNotifier {
   Map<String, double> _adjustments = {};
 
   Map<String, double> _paidBy = {};
-  final User me = const User(
-    id: "u100",
-    name: "Alice",
-  );
+  final User me = UserDataStore().me;
   late final DateTime date;
   final String groupId;
 
   //TODO : replace with current user when auth is ready
-  final User createdBy = const User(
-    id: "u100",
-    name: "Alice",
-  );
+  final User createdBy = UserDataStore().me;
+
+  final bool isSettleUp;
 
   Expense({
     required this.users,
@@ -38,6 +35,7 @@ class Expense extends ChangeNotifier {
     this.id,
     double amount = 0,
     List<String>? selectedUsers,
+    this.isSettleUp = false,
   }) {
     _splitType = SplitType.equal;
     _selectedUsers = selectedUsers ?? users.map((user) => user.id).toList();
@@ -51,7 +49,6 @@ class Expense extends ChangeNotifier {
 
   set amount(double amount) {
     _amount = amount;
-    _paidBy[me.id] = amount;
     notifyListeners();
   }
 
@@ -333,6 +330,7 @@ class Expense extends ChangeNotifier {
       groupId: expenseModel.groupId,
       amount: expenseModel.amount,
       selectedUsers: expenseModel.participantIds,
+      isSettleUp: expenseModel.isSettleUp,
     )
       ..name = expenseModel.title
       .._paidBy = {expenseModel.payerId: expenseModel.amount}
@@ -355,6 +353,7 @@ class Expense extends ChangeNotifier {
       groupId: groupId,
       amount: amount,
       selectedUsers: selectedUsers.toList(),
+      isSettleUp: isSettleUp,
     )
       ..name = name
       .._paidBy.clear()
@@ -370,11 +369,36 @@ class Expense extends ChangeNotifier {
     _selectedUsers.clear();
     _selectedUsers.addAll(expense.selectedUsers);
     name = expense.name;
+    _amount = expense.amount;
     _paidBy = expense._paidBy;
     splitType = expense.splitType;
     _amounts = expense._amounts;
     _percentages = expense._percentages;
     _shares = expense._shares;
     _adjustments = expense._adjustments;
+  }
+
+  String getSettledToUser() {
+    final includedIds = getIncludedIds();
+    for (final id in includedIds) {
+      if (id == me.id) {
+        return "you";
+      }
+      return users.firstWhere((user) => user.id == id).name;
+    }
+    return "";
+  }
+
+  User? getSettlementUser() {
+    for (final paidBy in _paidBy.keys) {
+      if (paidBy != me.id) {
+        return GroupUsersDataStore().getUser(paidBy)!;
+      }
+    }
+    final includedIds = getIncludedIds();
+    for (final id in includedIds) {
+      return users.firstWhere((user) => user.id == id);
+    }
+    return null;
   }
 }
