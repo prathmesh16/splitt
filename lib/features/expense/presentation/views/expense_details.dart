@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/elevated_widget.dart';
 import 'package:splitt/common/models/expense.dart';
+import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/common/utils/string_extensions.dart';
 import 'package:splitt/features/expense/presentation/bloc/edit_expense_bloc.dart';
 import 'package:splitt/features/expense/presentation/views/add_edit_expense_screen.dart';
@@ -26,6 +27,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final includedIds = widget.expense.getIncludedIds();
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, isExpenseEdited);
@@ -159,25 +161,24 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
-                        left: 52,
-                        top: 8,
+                        left: 24,
                       ),
                       child: Column(
                         children: [
-                          ...widget.expense.getIncludedIds().map(
-                                (id) => Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4),
-                                  child: _PaidDetailsRow(
+                          ...includedIds
+                              .asMap()
+                              .map((index, id) => MapEntry(
+                                  index,
+                                  _PaidDetailsRow(
+                                    isLast: index == includedIds.length - 1,
                                     name: GroupUsersDataStore()
                                             .getUser(id)
                                             ?.name ??
                                         "",
                                     amount: widget.expense
                                         .getFormattedBorrowedAmount(id: id),
-                                  ),
-                                ),
-                              ),
+                                  )))
+                              .values,
                         ],
                       ),
                     ),
@@ -193,12 +194,14 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
 }
 
 class _PaidDetailsRow extends StatelessWidget {
+  final bool isLast;
   final String name;
   final String amount;
   final bool isPaidBy;
 
   const _PaidDetailsRow({
     super.key,
+    this.isLast = false,
     required this.name,
     required this.amount,
     this.isPaidBy = false,
@@ -208,9 +211,23 @@ class _PaidDetailsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        if (!isPaidBy)
+          Container(
+            width: 0.5,
+            height: isLast ? 16 : 32,
+            margin: EdgeInsets.only(bottom: isLast ? 16 : 0),
+            color: Constants.hierarchyColor,
+          ),
+        if (!isPaidBy)
+          Container(
+            width: 24,
+            height: 0.5,
+            color: Constants.hierarchyColor,
+          ),
+        if (!isPaidBy) const SizedBox(width: 8),
         Avatar(
-          height: isPaidBy ? 36 : 24,
-          width: isPaidBy ? 36 : 24,
+          height: isPaidBy ? 48 : 24,
+          width: isPaidBy ? 48 : 24,
         ),
         SizedBox(
           width: isPaidBy ? 16 : 8,
@@ -218,7 +235,9 @@ class _PaidDetailsRow extends StatelessWidget {
         Text(
           "${name.capitalize()} ${isPaidBy ? "paid" : "owe"} ₹$amount",
           style: isPaidBy
-              ? null
+              ? const TextStyle(
+                  fontSize: 16,
+                )
               : const TextStyle(
                   fontSize: 12,
                   color: Colors.grey,
