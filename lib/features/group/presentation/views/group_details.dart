@@ -17,7 +17,7 @@ import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/common/utils/date_time_extensions.dart';
 import 'package:splitt/common/utils/string_extensions.dart';
 import 'package:splitt/features/group/presentation/models/group_expense.dart';
-import 'package:splitt/features/split/views/expense_provider.dart';
+import 'package:splitt/features/expense/presentation/views/expense_provider.dart';
 import 'package:splitt/features/expense/presentation/views/add_edit_expense_screen.dart';
 
 class GroupDetails extends StatefulWidget {

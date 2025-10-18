@@ -10,7 +10,7 @@ import 'package:splitt/features/expense/presentation/views/add_edit_expense_scre
 import 'package:splitt/features/expense/presentation/views/delete_button.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/settle_up/presentation/views/record_payment_screen.dart';
-import 'package:splitt/features/split/views/expense_provider.dart';
+import 'package:splitt/features/expense/presentation/views/expense_provider.dart';
 
 class ExpenseDetails extends StatefulWidget {
   final Expense expense;

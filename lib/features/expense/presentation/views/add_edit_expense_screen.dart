@@ -6,8 +6,8 @@ import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/expense/presentation/bloc/expense_bloc.dart';
 import 'package:splitt/features/expense/presentation/views/save_button.dart';
-import 'package:splitt/features/split/views/expense_provider.dart';
-import 'package:splitt/features/split/views/paid_by.dart';
+import 'package:splitt/features/expense/presentation/views/expense_provider.dart';
+import 'package:splitt/features/expense/presentation/views/paid_by_screen.dart';
 import 'package:splitt/features/split/views/split_screen.dart';
 
 class AddEditExpenseScreen extends StatefulWidget {
@@ -209,7 +209,7 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                                     slideFromBottom(
                                       ExpenseProvider(
                                         expense: expense,
-                                        child: const PaidBy(),
+                                        child: const PaidByScreen(),
                                       ),
                                     ),
                                   );

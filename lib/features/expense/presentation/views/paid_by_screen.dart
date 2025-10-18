@@ -5,8 +5,8 @@ import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
 import 'package:splitt/common/utils/constants.dart';
 
-class PaidBy extends StatelessWidget {
-  const PaidBy({super.key});
+class PaidByScreen extends StatelessWidget {
+  const PaidByScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
