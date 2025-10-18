@@ -11,7 +11,7 @@ class GroupExpense {
     required this.groupId,
   });
 
-  final User me = UserDataStore().me;
+  final User me = UserDataStore().me!;
 
   Map<String, double> getRemainingAmounts() {
     final Map<String, double> amounts = {};

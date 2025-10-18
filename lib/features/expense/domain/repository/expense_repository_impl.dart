@@ -2,7 +2,7 @@ import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/expense/data/api/expense_api_service.dart';
 import 'package:splitt/features/expense/data/api/expense_api_service_impl.dart';
 import 'package:splitt/features/expense/domain/repository/expense_repository.dart';
-import 'package:splitt/features/expense_model.dart';
+import 'package:splitt/features/expense/data/models/expense_model.dart';
 
 class ExpenseRepositoryImpl implements ExpenseRepository {
   final ExpenseAPIService _expenseAPIService;
