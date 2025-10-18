@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:splitt/common/avatar.dart';
+import 'package:splitt/common/currency_amount.dart';
 import 'package:splitt/common/elevated_widget.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/common/page_transitions.dart';
-import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/common/utils/string_extensions.dart';
 import 'package:splitt/features/expense/presentation/bloc/edit_expense_bloc.dart';
 import 'package:splitt/features/expense/presentation/views/add_edit_expense_screen.dart';
@@ -11,6 +11,7 @@ import 'package:splitt/features/expense/presentation/views/delete_button.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/settle_up/presentation/views/record_payment_screen.dart';
 import 'package:splitt/features/expense/presentation/views/expense_provider.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class ExpenseDetails extends StatefulWidget {
   final Expense expense;
@@ -51,13 +52,11 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         size: 20,
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 48),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 48),
                       child: Text(
                         "Details",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
+                        style: context.f.body1,
                       ),
                     ),
                     Row(
@@ -143,19 +142,19 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         children: [
                           Text(
                             widget.expense.name,
-                            style: const TextStyle(fontSize: 20),
+                            style: context.f.heading2,
                           ),
-                          Text(
-                            "₹${widget.expense.getFormattedAmount()}",
-                            style: const TextStyle(
-                              fontSize: 24,
+                          CurrencyAmount(
+                            amount: widget.expense.getFormattedAmount(),
+                            style: context.f.heading1.copyWith(
                               fontWeight: FontWeight.w500,
+                              fontSize: 30,
                             ),
                           ),
                           Text(
                             "Added by ${widget.expense.createdBy.name} on ${widget.expense.getFormattedDate()}",
-                            style: const TextStyle(
-                              color: Colors.grey,
+                            style: context.f.body2.copyWith(
+                              color: context.c.secondaryTextColor,
                             ),
                           ),
                         ],
@@ -233,13 +232,13 @@ class _PaidDetailsRow extends StatelessWidget {
             width: 0.5,
             height: isLast ? 16 : 32,
             margin: EdgeInsets.only(bottom: isLast ? 16 : 0),
-            color: Constants.hierarchyColor,
+            color: context.c.hintColor,
           ),
         if (!isPaidBy)
           Container(
             width: 24,
             height: 0.5,
-            color: Constants.hierarchyColor,
+            color: context.c.hintColor,
           ),
         if (!isPaidBy) const SizedBox(width: 8),
         Avatar(
@@ -250,14 +249,19 @@ class _PaidDetailsRow extends StatelessWidget {
           width: isPaidBy ? 16 : 8,
         ),
         Text(
-          "${name.capitalize()} ${isPaidBy ? "paid" : "owe"} ₹$amount",
+          "${name.capitalize()} ${isPaidBy ? "paid" : "owe"} ",
           style: isPaidBy
-              ? const TextStyle(
-                  fontSize: 16,
-                )
-              : const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
+              ? context.f.body1
+              : context.f.body3.copyWith(
+                  color: context.c.secondaryTextColor,
+                ),
+        ),
+        CurrencyAmount(
+          amount: amount,
+          style: isPaidBy
+              ? context.f.body1
+              : context.f.body3.copyWith(
+                  color: context.c.secondaryTextColor,
                 ),
         ),
       ],
