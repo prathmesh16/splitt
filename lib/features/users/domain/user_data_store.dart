@@ -9,10 +9,5 @@ class UserDataStore {
     return _instance;
   }
 
-  final User me = const User(
-    id: "u100",
-    name: "Alice",
-    mobile: "",
-    email: "",
-  );
+  User? me;
 }

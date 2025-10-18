@@ -16,4 +16,10 @@ class UsersRepositoryImpl implements UsersRepository {
     final users = response.data as List;
     return users.map((user) => UserModel.fromJson(user)).toList();
   }
+
+  @override
+  Future<UserModel> getMyDetails() async {
+    final response = await _userAPIService.getMyDetails();
+    return UserModel.fromJson(response.data);
+  }
 }

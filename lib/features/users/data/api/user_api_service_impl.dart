@@ -7,4 +7,9 @@ class UserAPIServiceImpl extends BaseAPIService implements UserAPIService {
   Future<APIResponse> getAllUsers() async {
     return get('users');
   }
+
+  @override
+  Future<APIResponse> getMyDetails() async {
+    return get('users/me');
+  }
 }

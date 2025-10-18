@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:splitt/common/utils/utils.dart';
-import 'package:splitt/features/expense_model.dart';
+import 'package:splitt/features/expense/data/models/expense_model.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/users/domain/user_data_store.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
@@ -20,12 +20,10 @@ class Expense extends ChangeNotifier {
   Map<String, double> _adjustments = {};
 
   Map<String, double> _paidBy = {};
-  final User me = UserDataStore().me;
+  final User me = UserDataStore().me!;
   late final DateTime date;
   final String groupId;
-
-  //TODO : replace with current user when auth is ready
-  final User createdBy = UserDataStore().me;
+  final User createdBy = UserDataStore().me!;
 
   final bool isSettleUp;
 
@@ -49,6 +47,10 @@ class Expense extends ChangeNotifier {
 
   set amount(double amount) {
     _amount = amount;
+    for (final paidBy in _paidBy.keys) {
+      _paidBy[paidBy] = amount;
+      break;
+    }
     notifyListeners();
   }
 

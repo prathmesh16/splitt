@@ -346,7 +346,7 @@ class _ExpenseItem extends StatelessWidget {
             ExpenseDetails(expense: expense),
           ),
         );
-        if (res != null) {
+        if (res == true) {
           expensesBloc.getGroupExpenses(expense.groupId);
         }
       },

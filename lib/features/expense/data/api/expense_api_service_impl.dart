@@ -1,7 +1,7 @@
 import 'package:splitt/features/core/models/api_response.dart';
 import 'package:splitt/features/core/network/base_api_service.dart';
 import 'package:splitt/features/expense/data/api/expense_api_service.dart';
-import 'package:splitt/features/expense_model.dart';
+import 'package:splitt/features/expense/data/models/expense_model.dart';
 
 class ExpenseApiServiceImpl extends BaseAPIService
     implements ExpenseAPIService {

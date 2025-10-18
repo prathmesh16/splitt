@@ -1,5 +1,5 @@
 import 'package:splitt/common/models/expense.dart';
-import 'package:splitt/features/expense_model.dart';
+import 'package:splitt/features/expense/data/models/expense_model.dart';
 
 abstract class ExpenseRepository {
   Future saveExpense(Expense expense);

@@ -55,8 +55,8 @@ class _RecordPaymentScreenState extends State<RecordPaymentScreen> {
       ..name = "Settle up"
       ..selectedUsers.clear()
       ..selectedUsers
-          .addAll([widget.amount < 0 ? widget.user.id : UserDataStore().me.id])
-      ..setPaidBy(widget.amount > 0 ? widget.user.id : UserDataStore().me.id);
+          .addAll([widget.amount < 0 ? widget.user.id : UserDataStore().me!.id])
+      ..setPaidBy(widget.amount > 0 ? widget.user.id : UserDataStore().me!.id);
   }
 
   @override

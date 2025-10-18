@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:splitt/features/group/presentation/views/groups_list_screen.dart';
+import 'package:splitt/features/users/presentation/bloc/my_details_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,6 +23,15 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  late final MyDetailsBloc myDetailsBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    myDetailsBloc = MyDetailsBloc();
+    myDetailsBloc.getMyDetails();
   }
 
   @override
