@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:splitt/common/add_expense_button.dart';
+import 'package:splitt/common/currency_amount.dart';
 import 'package:splitt/common/elevated_widget.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/common/page_transitions.dart';
@@ -19,6 +21,7 @@ import 'package:splitt/common/utils/string_extensions.dart';
 import 'package:splitt/features/group/presentation/models/group_expense.dart';
 import 'package:splitt/features/expense/presentation/views/expense_provider.dart';
 import 'package:splitt/features/expense/presentation/views/add_edit_expense_screen.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class GroupDetails extends StatefulWidget {
   final Group group;
@@ -57,8 +60,8 @@ class _GroupDetailsState extends State<GroupDetails> {
     return BlocProvider(
       create: (_) => expensesBloc,
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
+        floatingActionButton: AddExpenseButton(
+          onTap: () {
             final newExpense = Expense(
               groupId: widget.group.id,
               users: users,
@@ -81,7 +84,6 @@ class _GroupDetailsState extends State<GroupDetails> {
               ),
             );
           },
-          child: const Icon(Icons.sticky_note_2_outlined),
         ),
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -135,8 +137,8 @@ class _GroupDetailsState extends State<GroupDetails> {
                               },
                               child: Text(
                                 widget.group.name,
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: context.f.heading1.copyWith(
+                                  color: context.c.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -191,37 +193,70 @@ class _GroupDetailsState extends State<GroupDetails> {
                       children: [
                         Text(
                           widget.group.name,
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
+                          style: context.f.heading2,
                         ),
                         if (groupExpense.getFinalRemainingAmount() != 0)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 4),
-                            child: Text(
-                              groupExpense.getFinalRemainingAmount() > 0
-                                  ? "You are owed ₹${groupExpense.getFinalRemainingAmount().toStringAsFixed(2)} overall"
-                                  : "You owe ₹${groupExpense.getFinalRemainingAmount().abs().toStringAsFixed(2)} overall",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color:
-                                    groupExpense.getFinalRemainingAmount() > 0
-                                        ? Constants.lentColor
-                                        : Constants.borrowedColor,
-                              ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  groupExpense.getFinalRemainingAmount() > 0
+                                      ? "You are owed "
+                                      : "You owe ",
+                                  style: context.f.body2.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color:
+                                        groupExpense.getFinalRemainingAmount() >
+                                                0
+                                            ? context.c.primaryColor
+                                            : context.c.secondaryColor,
+                                  ),
+                                ),
+                                CurrencyAmount(
+                                  amount: groupExpense
+                                      .getFormattedFinalRemainingAmount(),
+                                  style: context.f.body2.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color:
+                                        groupExpense.getFinalRemainingAmount() >
+                                                0
+                                            ? context.c.primaryColor
+                                            : context.c.secondaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  " overall",
+                                  style: context.f.body2.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color:
+                                        groupExpense.getFinalRemainingAmount() >
+                                                0
+                                            ? context.c.primaryColor
+                                            : context.c.secondaryColor,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ...groupExpense.getRemainingAmounts().map((id, amount) {
                           return MapEntry(
                             id,
-                            Text(
-                              amount > 0
-                                  ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you ₹${amount.toStringAsFixed(2)}"
-                                  : "You owe ${users.firstWhere((user) => user.id == id).name} ₹${amount.abs().toStringAsFixed(2)}",
-                              style: const TextStyle(
-                                fontSize: 12,
-                              ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  amount > 0
+                                      ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you "
+                                      : "You owe ${users.firstWhere((user) => user.id == id).name} ",
+                                  style: context.f.body3,
+                                ),
+                                CurrencyAmount(
+                                  amount: amount.abs().toStringAsFixed(2),
+                                  style: context.f.body3,
+                                ),
+                              ],
                             ),
                           );
                         }).values,
@@ -230,11 +265,15 @@ class _GroupDetailsState extends State<GroupDetails> {
                   ),
                   if (groupExpense.getFinalRemainingAmount() != 0)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       child: SizedBox(
-                        width: 80,
+                        width: 88,
                         child: ElevatedWidget(
                           verticalPadding: 4,
+                          backgroundColor: context.c.secondaryColor,
                           onTap: () async {
                             final res = await Navigator.push(
                               context,
@@ -248,7 +287,13 @@ class _GroupDetailsState extends State<GroupDetails> {
                               expensesBloc.getGroupExpenses(widget.group.id);
                             }
                           },
-                          child: const Text("Settle up"),
+                          child: Text(
+                            "Settle up",
+                            style: context.f.body2.copyWith(
+                              color: context.c.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -310,8 +355,8 @@ class _ExpenseList extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
                     DateFormat("MMMM yyyy").format(savedExpenses[index].date),
-                    style: const TextStyle(
-                      fontSize: 12,
+                    style: context.f.body3.copyWith(
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
@@ -363,58 +408,81 @@ class _ExpenseItem extends StatelessWidget {
                 children: [
                   Text(
                     DateFormat("MMM").format(expense.date),
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
+                    style: context.f.body3.copyWith(
+                      color: context.c.secondaryTextColor,
                     ),
                   ),
                   Text(
                     DateFormat("dd").format(expense.date),
-                    style: const TextStyle(color: Colors.grey),
+                    style: context.f.body2.copyWith(
+                      color: context.c.secondaryTextColor,
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 12),
             if (expense.isSettleUp)
-              const SizedBox(
+              SizedBox(
                 height: 36,
                 width: 36,
-                child: Icon(
-                  Icons.wallet,
-                  color: Constants.lentColor,
-                ),
+                child: Image.asset("assets/images/settle.png"),
               )
             else
               Container(
                 height: 36,
                 width: 36,
-                color: Colors.blueGrey[100],
-                child: const Icon(
-                  Icons.event_note_outlined,
-                ),
+                color: context.c.hintColor,
+                child: Image.asset("assets/images/expense.png"),
               ),
             const SizedBox(width: 12),
             if (expense.isSettleUp)
-              Text(
-                "${expense.getPaidBy().capitalize()} paid ${expense.getSettledToUser()} ₹${expense.getPaidAmount()}",
-                style: const TextStyle(
-                  fontSize: 12,
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${expense.getPaidBy().capitalize()} paid ${expense.getSettledToUser()} ",
+                    style: context.f.body2.copyWith(
+                      fontSize: 10,
+                    ),
+                  ),
+                  CurrencyAmount(
+                    amount: expense.getPaidAmount(),
+                    style: context.f.body2.copyWith(
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
               )
             else
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(expense.name),
                   Text(
-                    remainingAmount != 0
-                        ? "${expense.getPaidBy().capitalize()} paid ₹${expense.getPaidAmount()}"
-                        : "You were not involved",
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 10,
-                    ),
+                    expense.name,
+                    style: context.f.body1,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        remainingAmount != 0
+                            ? "${expense.getPaidBy().capitalize()} paid "
+                            : "You were not involved",
+                        style: context.f.body2.copyWith(
+                          fontSize: 10,
+                          color: context.c.secondaryTextColor,
+                        ),
+                      ),
+                      if (remainingAmount != 0)
+                        CurrencyAmount(
+                          amount: expense.getPaidAmount(),
+                          style: context.f.body2.copyWith(
+                            fontSize: 10,
+                            color: context.c.secondaryTextColor,
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
@@ -430,26 +498,26 @@ class _ExpenseItem extends StatelessWidget {
                         : remainingAmount < 0
                             ? "you borrowed"
                             : "not involved",
-                    style: TextStyle(
+                    style: context.f.body2.copyWith(
                       color: remainingAmount > 0
-                          ? Constants.lentColor
+                          ? context.c.primaryColor
                           : remainingAmount < 0
-                              ? Constants.borrowedColor
-                              : Colors.grey,
+                              ? context.c.secondaryColor
+                              : context.c.secondaryTextColor,
                       fontSize: 10,
                     ),
                   ),
                   if (remainingAmount != 0)
-                    Text(
-                      "₹${expense.getFormattedRemainingAmount()}",
-                    style: TextStyle(
-                      color: remainingAmount > 0
-                          ? Constants.lentColor
-                          : Constants.borrowedColor,
+                    CurrencyAmount(
+                      amount: expense.getFormattedRemainingAmount(),
+                      style: context.f.body2.copyWith(
+                        color: remainingAmount > 0
+                            ? context.c.primaryColor
+                            : context.c.secondaryColor,
+                      ),
                     ),
-                  ),
-              ],
-            ),
+                ],
+              ),
           ],
         ),
       ),

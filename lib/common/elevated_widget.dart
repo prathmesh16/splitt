@@ -5,6 +5,7 @@ class ElevatedWidget extends StatefulWidget {
   final VoidCallback? onTap;
   final double? horizontalPadding;
   final double? verticalPadding;
+  final Color? backgroundColor;
 
   const ElevatedWidget({
     super.key,
@@ -12,6 +13,7 @@ class ElevatedWidget extends StatefulWidget {
     this.onTap,
     this.horizontalPadding,
     this.verticalPadding,
+    this.backgroundColor,
   });
 
   @override
@@ -43,9 +45,12 @@ class _ElevatedWidgetState extends State<ElevatedWidget> {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: widget.backgroundColor ?? Colors.white,
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: Colors.black12, width: 0.5),
+          border: Border.all(
+            color: widget.backgroundColor ?? Colors.black12,
+            width: 0.5,
+          ),
           boxShadow: !_isTapped
               ? [
                   BoxShadow(

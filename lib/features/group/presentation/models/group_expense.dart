@@ -41,4 +41,8 @@ class GroupExpense {
     }
     return amounts.values.reduce((a, b) => a + b);
   }
+
+  String getFormattedFinalRemainingAmount() {
+    return getFinalRemainingAmount().abs().toStringAsFixed(2);
+  }
 }
