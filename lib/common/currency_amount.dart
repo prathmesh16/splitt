@@ -20,9 +20,10 @@ class CurrencyAmount extends StatelessWidget {
           TextSpan(
             text: CurrencyDataStore()
                 .getCurrencySymbol(CurrencyDataStore().selectedCurrency),
-            style: GoogleFonts.notoSans(
+            style: GoogleFonts.notoSansHk(
               textStyle: style?.copyWith(
                 fontFamilyFallback: const [],
+                fontSize: (style?.fontSize ?? 14) + 2,
               ),
             ),
           ),

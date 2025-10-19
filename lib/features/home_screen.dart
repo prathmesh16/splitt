@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:splitt/features/accounts/presentation/views/accounts_screen.dart';
 import 'package:splitt/features/group/presentation/views/groups_list_screen.dart';
 import 'package:splitt/features/users/presentation/bloc/my_details_bloc.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -42,9 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.green.shade700,
-        unselectedItemColor: Colors.grey,
+        backgroundColor: context.c.white,
+        selectedItemColor: context.c.primaryColor,
+        unselectedItemColor: context.c.secondaryTextColor,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
         items: const [
