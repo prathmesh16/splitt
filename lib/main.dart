@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
       theme: AppTheme.lightTheme,
       home: context.read<AuthBloc>().state.isLoggedIn
           ? const HomeScreen()
-          : const LoginPage(),
+          : const LoginScreen(),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:splitt/features/accounts/presentation/views/accounts_screen.dart';
 import 'package:splitt/features/group/presentation/views/groups_list_screen.dart';
 import 'package:splitt/features/users/presentation/bloc/my_details_bloc.dart';
 
@@ -16,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Center(child: Text("Friends")),
     Center(child: GroupsListScreen()),
     Center(child: Text("Activity")),
-    Center(child: Text("Account")),
+    Center(child: AccountsScreen()),
   ];
 
   void _onItemTapped(int index) {
