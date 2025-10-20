@@ -9,7 +9,6 @@ import 'package:splitt/common/utils/string_extensions.dart';
 import 'package:splitt/features/expense/presentation/bloc/edit_expense_bloc.dart';
 import 'package:splitt/features/expense/presentation/views/add_edit_expense_screen.dart';
 import 'package:splitt/features/expense/presentation/views/delete_button.dart';
-import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/settle_up/presentation/views/record_payment_screen.dart';
 import 'package:splitt/features/expense/presentation/views/expense_provider.dart';
 import 'package:splitt/theme/theme_extension.dart';
@@ -153,7 +152,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             ),
                           ),
                           Text(
-                            "Added by ${widget.expense.createdBy.name} on ${widget.expense.getFormattedDate()}",
+                            "Added by ${widget.expense.getExpenseAddedBy()} on ${widget.expense.getFormattedDate()}",
                             style: context.f.body2.copyWith(
                               color: context.c.secondaryTextColor,
                             ),
@@ -176,24 +175,18 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     amount: widget.expense.getFormattedAmount(),
                     isPaidBy: true,
                   ),
-                  children: includedIds
-                      .asMap()
+                  children: widget.expense
+                      .getIncludedIdNames()
                       .map(
-                        (index, id) => MapEntry(
-                          index,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: _PaidDetailsRow(
-                              isLast: index == includedIds.length - 1,
-                              name:
-                                  GroupUsersDataStore().getUser(id)?.name ?? "",
-                              amount: widget.expense
-                                  .getFormattedBorrowedAmount(id: id),
-                            ),
+                        (pair) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: _PaidDetailsRow(
+                            name: pair.second,
+                            amount: widget.expense
+                                .getFormattedBorrowedAmount(id: pair.first),
                           ),
                         ),
                       )
-                      .values
                       .toList(),
                 ),
               ),
@@ -206,14 +199,11 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
 }
 
 class _PaidDetailsRow extends StatelessWidget {
-  final bool isLast;
   final String name;
   final String amount;
   final bool isPaidBy;
 
   const _PaidDetailsRow({
-    super.key,
-    this.isLast = false,
     required this.name,
     required this.amount,
     this.isPaidBy = false,

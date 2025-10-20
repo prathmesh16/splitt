@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:splitt/common/pair.dart';
 import 'package:splitt/common/utils/utils.dart';
 import 'package:splitt/features/expense/data/models/expense_model.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
@@ -22,7 +23,7 @@ class Expense extends ChangeNotifier {
   Map<String, double> _paidBy = {};
   final User me = UserDataStore().me!;
   final String myUserId = UserDataStore().userId;
-  late final DateTime date;
+  late final DateTime timeStamp;
   final String groupId;
   final User createdBy = UserDataStore().me!;
 
@@ -35,6 +36,7 @@ class Expense extends ChangeNotifier {
     double amount = 0,
     List<String>? selectedUsers,
     this.isSettleUp = false,
+    DateTime? timeStamp,
   }) {
     _splitType = SplitType.equal;
     _selectedUsers = selectedUsers ?? users.map((user) => user.id).toList();
@@ -43,7 +45,7 @@ class Expense extends ChangeNotifier {
     }
     _amount = amount;
     _paidBy[myUserId] = amount;
-    date = DateTime.now();
+    this.timeStamp = timeStamp ?? DateTime.now();
   }
 
   set amount(double amount) {
@@ -292,6 +294,16 @@ class Expense extends ChangeNotifier {
     return ids;
   }
 
+  List<Pair<String, String>> getIncludedIdNames() {
+    final includedIds = getIncludedIds();
+    return includedIds.map((id) {
+      if (id == me.id) {
+        return (first: id, second: "you");
+      }
+      return (first: id, second: GroupUsersDataStore().getUser(id)?.name ?? "");
+    }).toList();
+  }
+
   Map<String, dynamic> getSplitDetails() {
     switch (_splitType) {
       case SplitType.equal:
@@ -334,6 +346,7 @@ class Expense extends ChangeNotifier {
       amount: expenseModel.amount,
       selectedUsers: expenseModel.participantIds,
       isSettleUp: expenseModel.isSettleUp,
+      timeStamp: expenseModel.timeStamp,
     )
       ..name = expenseModel.title
       .._paidBy = {expenseModel.payerId: expenseModel.amount}
@@ -342,7 +355,7 @@ class Expense extends ChangeNotifier {
   }
 
   String getFormattedDate([String format = "dd MMMM yyyy"]) {
-    return DateFormat(format).format(date);
+    return DateFormat(format).format(timeStamp);
   }
 
   String getFormattedAmount() {
@@ -357,6 +370,7 @@ class Expense extends ChangeNotifier {
       amount: amount,
       selectedUsers: selectedUsers.toList(),
       isSettleUp: isSettleUp,
+      timeStamp: timeStamp,
     )
       ..name = name
       .._paidBy.clear()
@@ -403,5 +417,20 @@ class Expense extends ChangeNotifier {
       return users.firstWhere((user) => user.id == id);
     }
     return null;
+  }
+
+  String getExpenseAddedBy() {
+    if (me.id == createdBy.id) {
+      return "you";
+    }
+    return createdBy.name;
+  }
+
+  bool isPaidForMySelf() {
+    final paidById = getPaidByID();
+    final includedIds = getIncludedIds();
+    return (paidById == me.id &&
+        includedIds.length == 1 &&
+        includedIds[0] == me.id);
   }
 }

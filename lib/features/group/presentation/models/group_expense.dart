@@ -30,7 +30,7 @@ class GroupExpense {
             (amounts[expense.getPaidByID()] ?? 0) + remainingAmount;
       }
     }
-    return amounts..removeWhere((_, amount) => amount == 0);
+    return amounts..removeWhere((_, amount) => amount < 0.1 && amount > -0.1);
   }
 
   double getFinalRemainingAmount() {

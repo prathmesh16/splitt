@@ -12,12 +12,12 @@ class ExpenseModel {
   final String payerId;
   UserModel? paidBby;
   final String groupId;
-  GroupModel? group;
   final List<String> participantIds;
   final SplitType splitType;
   final Map<String, dynamic> splitDetails;
   final Map<String, double> shares;
   final bool isSettleUp;
+  final DateTime? timeStamp;
 
   ExpenseModel({
     this.id,
@@ -27,12 +27,12 @@ class ExpenseModel {
     this.paidBby,
     this.description = "",
     required this.groupId,
-    this.group,
     required this.participantIds,
     required this.splitType,
     this.splitDetails = const {},
     this.shares = const {},
     this.isSettleUp = false,
+    this.timeStamp,
   });
 
   Map<String, dynamic> toJson() {
@@ -72,8 +72,7 @@ class ExpenseModel {
       amount: json["amount"] ?? 0,
       payerId: json["payer"]?["userId"] ?? "",
       paidBby: UserModel.fromJson(json["payer"] ?? {}),
-      groupId: json["group"]?["groupId"].toString() ?? "",
-      group: GroupModel.fromJson(json["group"] ?? {}),
+      groupId: json["groupId"] ?? "",
       participantIds: (json["participants"] as List)
           .map<String>((user) => user["userId"])
           .toList(),
@@ -81,6 +80,8 @@ class ExpenseModel {
       shares: Utils.convertMapValuesToType<double>(json['shares']),
       splitDetails: json["splitDetails"] ?? {},
       isSettleUp: json["isSettleUp"] ?? false,
+      timeStamp:
+          json["timestamp"] != null ? DateTime.parse(json["timestamp"]) : null,
     );
   }
 }
