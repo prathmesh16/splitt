@@ -1,6 +1,5 @@
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/users/domain/user_data_store.dart';
-import 'package:splitt/features/users/presentation/models/user.dart';
 
 class GroupExpense {
   List<Expense> savedExpenses;
@@ -11,15 +10,15 @@ class GroupExpense {
     required this.groupId,
   });
 
-  final User me = UserDataStore().me!;
+  final String myUserId = UserDataStore().userId;
 
   Map<String, double> getRemainingAmounts() {
     final Map<String, double> amounts = {};
     for (final expense in savedExpenses) {
-      if (expense.getPaidByID() == me.id) {
+      if (expense.getPaidByID() == myUserId) {
         final includedIds = expense.getIncludedIds();
         for (final id in includedIds) {
-          if (id == me.id) {
+          if (id == myUserId) {
             continue;
           }
           final remainingAmount = expense.getRemainingAmount(id: id);

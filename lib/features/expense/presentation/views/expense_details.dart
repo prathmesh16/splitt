@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/currency_amount.dart';
 import 'package:splitt/common/elevated_widget.dart';
+import 'package:splitt/common/hierarchy_widget.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/common/utils/string_extensions.dart';
@@ -168,37 +169,32 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   horizontal: 16,
                   vertical: 16,
                 ),
-                child: Column(
-                  children: [
-                    _PaidDetailsRow(
-                      name: widget.expense.getPaidBy(),
-                      amount: widget.expense.getFormattedAmount(),
-                      isPaidBy: true,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 24,
-                      ),
-                      child: Column(
-                        children: [
-                          ...includedIds
-                              .asMap()
-                              .map((index, id) => MapEntry(
-                                  index,
-                                  _PaidDetailsRow(
-                                    isLast: index == includedIds.length - 1,
-                                    name: GroupUsersDataStore()
-                                            .getUser(id)
-                                            ?.name ??
-                                        "",
-                                    amount: widget.expense
-                                        .getFormattedBorrowedAmount(id: id),
-                                  )))
-                              .values,
-                        ],
-                      ),
-                    ),
-                  ],
+                child: HierarchyWidget(
+                  childLeftPadding: 23.5,
+                  header: _PaidDetailsRow(
+                    name: widget.expense.getPaidBy(),
+                    amount: widget.expense.getFormattedAmount(),
+                    isPaidBy: true,
+                  ),
+                  children: includedIds
+                      .asMap()
+                      .map(
+                        (index, id) => MapEntry(
+                          index,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: _PaidDetailsRow(
+                              isLast: index == includedIds.length - 1,
+                              name:
+                                  GroupUsersDataStore().getUser(id)?.name ?? "",
+                              amount: widget.expense
+                                  .getFormattedBorrowedAmount(id: id),
+                            ),
+                          ),
+                        ),
+                      )
+                      .values
+                      .toList(),
                 ),
               ),
             ],
@@ -227,20 +223,6 @@ class _PaidDetailsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (!isPaidBy)
-          Container(
-            width: 0.5,
-            height: isLast ? 16 : 32,
-            margin: EdgeInsets.only(bottom: isLast ? 16 : 0),
-            color: context.c.hintColor,
-          ),
-        if (!isPaidBy)
-          Container(
-            width: 24,
-            height: 0.5,
-            color: context.c.hintColor,
-          ),
-        if (!isPaidBy) const SizedBox(width: 8),
         Avatar(
           height: isPaidBy ? 48 : 24,
           width: isPaidBy ? 48 : 24,
@@ -248,21 +230,26 @@ class _PaidDetailsRow extends StatelessWidget {
         SizedBox(
           width: isPaidBy ? 16 : 8,
         ),
-        Text(
-          "${name.capitalize()} ${isPaidBy ? "paid" : "owe"} ",
-          style: isPaidBy
-              ? context.f.body1
-              : context.f.body3.copyWith(
-                  color: context.c.secondaryTextColor,
-                ),
-        ),
-        CurrencyAmount(
-          amount: amount,
-          style: isPaidBy
-              ? context.f.body1
-              : context.f.body3.copyWith(
-                  color: context.c.secondaryTextColor,
-                ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "${name.capitalize()} ${isPaidBy ? "paid" : "owe"} ",
+              style: isPaidBy
+                  ? context.f.body1
+                  : context.f.body3.copyWith(
+                      color: context.c.secondaryTextColor,
+                    ),
+            ),
+            CurrencyAmount(
+              amount: amount,
+              style: isPaidBy
+                  ? context.f.body1
+                  : context.f.body3.copyWith(
+                      color: context.c.secondaryTextColor,
+                    ),
+            ),
+          ],
         ),
       ],
     );
