@@ -1,3 +1,4 @@
+import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/users/data/models/user_model.dart';
 
 class GroupModel {
@@ -24,5 +25,22 @@ class GroupModel {
               .toList()
           : [],
     );
+  }
+
+  factory GroupModel.fromGroup(Group group) {
+    return GroupModel(
+      id: group.id,
+      name: group.name,
+      description: group.description,
+      //Not required as of now
+      users: [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "description": description,
+    };
   }
 }

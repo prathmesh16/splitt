@@ -10,6 +10,7 @@ import 'package:splitt/features/group/presentation/bloc/groups_bloc.dart';
 import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
 import 'package:splitt/features/group/presentation/models/group_dashboard.dart';
+import 'package:splitt/features/group/presentation/views/create_group_screen.dart';
 import 'package:splitt/features/group/presentation/views/group_details.dart';
 import 'package:splitt/theme/theme_extension.dart';
 
@@ -33,16 +34,51 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocProvider(
-        create: (_) => groupDashboardBloc,
-        child: BlocBuilder<GroupDashboardBloc, UIState<GroupDashboard>>(
-          bloc: groupDashboardBloc,
-          builder: (_, UIState state) {
-            if (state is Success<GroupDashboard>) {
-              return _GroupsList(groupDashboard: state.data);
-            }
-            return const Center(child: CircularProgressIndicator());
-          },
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 16,
+                right: 16,
+              ),
+              child: Row(
+                children: [
+                  const Spacer(),
+                  InkWell(
+                    onTap: () async {
+                      final res = await Navigator.push(
+                        context,
+                        slideFromBottom(const CreateGroupScreen()),
+                      );
+                      if (res == true) {
+                        groupDashboardBloc.getGroupDashboard();
+                      }
+                    },
+                    child: Text(
+                      "Create group",
+                      style: context.f.body2.copyWith(
+                        color: context.c.primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            BlocProvider(
+              create: (_) => groupDashboardBloc,
+              child: BlocBuilder<GroupDashboardBloc, UIState<GroupDashboard>>(
+                bloc: groupDashboardBloc,
+                builder: (_, UIState state) {
+                  if (state is Success<GroupDashboard>) {
+                    return _GroupsList(groupDashboard: state.data);
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -58,45 +94,45 @@ class _GroupsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 32,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  groupDashboard.totalBalance > 0
-                      ? "Overall, you are owed "
-                      : "Overall, you owes ",
-                  style: context.f.body1.copyWith(
-                    fontWeight: FontWeight.w500,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Text(
+                    groupDashboard.totalBalance > 0
+                        ? "Overall, you are owed "
+                        : "Overall, you owes ",
+                    style: context.f.body1.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                CurrencyAmount(
-                  amount: groupDashboard.totalBalance.abs().toStringAsFixed(2),
-                  style: context.f.body1.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: groupDashboard.totalBalance > 0
-                        ? context.c.primaryColor
-                        : context.c.secondaryColor,
+                  CurrencyAmount(
+                    amount:
+                        groupDashboard.totalBalance.abs().toStringAsFixed(2),
+                    style: context.f.body1.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: groupDashboard.totalBalance > 0
+                          ? context.c.primaryColor
+                          : context.c.secondaryColor,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                Icon(
-                  Icons.filter_list_rounded,
-                  color: context.c.secondaryTextColor,
-                ),
-              ],
+                  const Spacer(),
+                  Icon(
+                    Icons.filter_list_rounded,
+                    color: context.c.secondaryTextColor,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
+            ListView.builder(
+              shrinkWrap: true,
+              primary: false,
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: groupDashboard.groups.length,
               itemBuilder: (_, index) {
                 return _GroupTile(
@@ -104,8 +140,8 @@ class _GroupsList extends StatelessWidget {
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

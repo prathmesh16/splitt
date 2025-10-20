@@ -239,7 +239,14 @@ class _GroupDetailsState extends State<GroupDetails> {
                               ],
                             ),
                           ),
-                        if (groupExpense.getRemainingAmounts().isEmpty)
+                        if (groupExpense.savedExpenses.isEmpty)
+                          Text(
+                            "No expenses here yet",
+                            style: context.f.body3.copyWith(
+                              color: context.c.secondaryTextColor,
+                            ),
+                          )
+                        else if (groupExpense.getRemainingAmounts().isEmpty)
                           Text(
                             "You are all settled up in this group",
                             style: context.f.body3.copyWith(
