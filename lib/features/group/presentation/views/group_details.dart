@@ -15,7 +15,6 @@ import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/settle_up/presentation/views/settle_up_screen.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
-import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/common/utils/date_time_extensions.dart';
 import 'package:splitt/common/utils/string_extensions.dart';
 import 'package:splitt/features/group/presentation/models/group_expense.dart';
@@ -240,6 +239,13 @@ class _GroupDetailsState extends State<GroupDetails> {
                               ],
                             ),
                           ),
+                        if (groupExpense.getRemainingAmounts().isEmpty)
+                          Text(
+                            "You are all settled up in this group",
+                            style: context.f.body3.copyWith(
+                              color: context.c.secondaryTextColor,
+                            ),
+                          ),
                         ...groupExpense.getRemainingAmounts().map((id, amount) {
                           return MapEntry(
                             id,
@@ -349,12 +355,13 @@ class _ExpenseList extends StatelessWidget {
             children: [
               if (index == 0 ||
                   !(savedExpenses[index - 1]
-                      .date
-                      .isSameMonth(savedExpenses[index].date)))
+                      .timeStamp
+                      .isSameMonth(savedExpenses[index].timeStamp)))
                 Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
-                    DateFormat("MMMM yyyy").format(savedExpenses[index].date),
+                    DateFormat("MMMM yyyy")
+                        .format(savedExpenses[index].timeStamp),
                     style: context.f.body3.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -407,13 +414,13 @@ class _ExpenseItem extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    DateFormat("MMM").format(expense.date),
+                    DateFormat("MMM").format(expense.timeStamp),
                     style: context.f.body3.copyWith(
                       color: context.c.secondaryTextColor,
                     ),
                   ),
                   Text(
-                    DateFormat("dd").format(expense.date),
+                    DateFormat("dd").format(expense.timeStamp),
                     style: context.f.body2.copyWith(
                       color: context.c.secondaryTextColor,
                     ),
@@ -468,7 +475,9 @@ class _ExpenseItem extends StatelessWidget {
                       Text(
                         remainingAmount != 0
                             ? "${expense.getPaidBy().capitalize()} paid "
-                            : "You were not involved",
+                            : expense.isPaidForMySelf()
+                                ? "You paid for yourself"
+                                : "You were not involved",
                         style: context.f.body2.copyWith(
                           fontSize: 10,
                           color: context.c.secondaryTextColor,
@@ -497,7 +506,9 @@ class _ExpenseItem extends StatelessWidget {
                         ? "you lent"
                         : remainingAmount < 0
                             ? "you borrowed"
-                            : "not involved",
+                            : expense.isPaidForMySelf()
+                                ? "no balance"
+                                : "not involved",
                     style: context.f.body2.copyWith(
                       color: remainingAmount > 0
                           ? context.c.primaryColor
