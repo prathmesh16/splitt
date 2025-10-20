@@ -3,11 +3,11 @@ import 'package:splitt/features/users/presentation/models/user.dart';
 
 class Group {
   final String id;
-  final String name;
-  final String description;
+  String name;
+  String description;
   final List<User> users;
 
-  const Group({
+  Group({
     required this.id,
     required this.name,
     required this.description,

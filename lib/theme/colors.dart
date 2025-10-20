@@ -16,6 +16,8 @@ abstract class IColors {
   Color get white;
 
   Color get black;
+
+  Color get inactiveColor;
 }
 
 class LightColors implements IColors {
@@ -29,7 +31,7 @@ class LightColors implements IColors {
   Color get primaryColor => const Color(0xFF21a987);
 
   @override
-  Color get primaryTextColor => const Color(0xFF101010);
+  Color get primaryTextColor => const Color(0xFF383c40);
 
   @override
   Color get secondaryColor => const Color(0xFFed5f0f);
@@ -42,4 +44,7 @@ class LightColors implements IColors {
 
   @override
   Color get white => const Color(0xFFFFFFFF);
+
+  @override
+  Color get inactiveColor => const Color(0xFFc9d3dc);
 }
