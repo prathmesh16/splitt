@@ -23,7 +23,7 @@ class CurrencyAmount extends StatelessWidget {
             style: GoogleFonts.notoSansHk(
               textStyle: style?.copyWith(
                 fontFamilyFallback: const [],
-                fontSize: (style?.fontSize ?? 14) + 2,
+                fontSize: (style?.fontSize ?? 14),
               ),
             ),
           ),

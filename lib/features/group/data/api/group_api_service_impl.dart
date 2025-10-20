@@ -4,7 +4,12 @@ import 'package:splitt/features/group/data/api/group_api_service.dart';
 
 class GroupApiServiceImpl extends BaseAPIService implements GroupAPIService {
   @override
-  Future<APIResponse> getAllGroups() async {
+  Future<APIResponse> getAllGroups() {
     return get('groups');
+  }
+
+  @override
+  Future<APIResponse> getGroupDashboard(String userId) {
+    return get("dashboard/users/$userId/groups");
   }
 }

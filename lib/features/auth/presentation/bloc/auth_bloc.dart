@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitt/features/auth/domain/auth_repository.dart';
 import 'package:splitt/features/auth/domain/auth_repository_impl.dart';
+import 'package:splitt/features/users/domain/user_data_store.dart';
 
 class AuthState {
   final bool isLoading;
@@ -36,6 +37,7 @@ class AuthBloc extends Cubit<AuthState> {
 
   Future<bool> checkLoginStatus() async {
     final loggedIn = await _authRepository.isLoggedIn();
+    await _setUserId();
     emit(state.copyWith(isLoggedIn: loggedIn));
     return loggedIn;
   }
@@ -44,14 +46,20 @@ class AuthBloc extends Cubit<AuthState> {
     emit(state.copyWith(isLoading: true, error: null));
     try {
       await _authRepository.login(email: email, password: password);
+      await _setUserId();
       emit(state.copyWith(isLoading: false, isLoggedIn: true));
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 
+  Future<void> _setUserId() async {
+    UserDataStore().userId = (await _authRepository.getUserId()) ?? "";
+  }
+
   Future<void> logout() async {
     await _authRepository.logout();
+    UserDataStore().clearData();
     emit(state.copyWith(isLoggedIn: false));
   }
 }

@@ -21,6 +21,7 @@ class Expense extends ChangeNotifier {
 
   Map<String, double> _paidBy = {};
   final User me = UserDataStore().me!;
+  final String myUserId = UserDataStore().userId;
   late final DateTime date;
   final String groupId;
   final User createdBy = UserDataStore().me!;
@@ -41,7 +42,7 @@ class Expense extends ChangeNotifier {
       _shares[user.id] = 1;
     }
     _amount = amount;
-    _paidBy[me.id] = amount;
+    _paidBy[myUserId] = amount;
     date = DateTime.now();
   }
 
@@ -69,7 +70,7 @@ class Expense extends ChangeNotifier {
   }
 
   String getPaidBy() {
-    if (_paidBy[me.id] != null) {
+    if (_paidBy[myUserId] != null) {
       return "you";
     }
     for (final paidBy in _paidBy.keys) {
@@ -79,8 +80,8 @@ class Expense extends ChangeNotifier {
   }
 
   String getPaidByID() {
-    if (_paidBy[me.id] != null) {
-      return me.id;
+    if (_paidBy[myUserId] != null) {
+      return myUserId;
     }
     for (final paidBy in _paidBy.keys) {
       return paidBy;
@@ -98,15 +99,15 @@ class Expense extends ChangeNotifier {
   double getBorrowedAmount({String? id}) {
     switch (_splitType) {
       case SplitType.equal:
-        return isUserSelected(id ?? me.id) ? equalSpilt : 0;
+        return isUserSelected(id ?? myUserId) ? equalSpilt : 0;
       case SplitType.amount:
-        return _amounts[id ?? me.id] ?? 0;
+        return _amounts[id ?? myUserId] ?? 0;
       case SplitType.percentage:
-        return amount * (_percentages[id ?? me.id] ?? 0) / 100;
+        return amount * (_percentages[id ?? myUserId] ?? 0) / 100;
       case SplitType.share:
-        return getUserShareAmount(id ?? me.id);
+        return getUserShareAmount(id ?? myUserId);
       case SplitType.adjustment:
-        return getUserAdjustmentTotalAmount(id ?? me.id);
+        return getUserAdjustmentTotalAmount(id ?? myUserId);
     }
   }
 
@@ -114,7 +115,7 @@ class Expense extends ChangeNotifier {
       getBorrowedAmount(id: id).abs().toStringAsFixed(2);
 
   double getRemainingAmount({String? id}) =>
-      (_paidBy[id ?? me.id] ?? 0) - getBorrowedAmount(id: id);
+      (_paidBy[id ?? myUserId] ?? 0) - getBorrowedAmount(id: id);
 
   String getFormattedRemainingAmount({String? id}) =>
       getRemainingAmount(id: id).abs().toStringAsFixed(2);
@@ -383,7 +384,7 @@ class Expense extends ChangeNotifier {
   String getSettledToUser() {
     final includedIds = getIncludedIds();
     for (final id in includedIds) {
-      if (id == me.id) {
+      if (id == myUserId) {
         return "you";
       }
       return users.firstWhere((user) => user.id == id).name;
@@ -393,7 +394,7 @@ class Expense extends ChangeNotifier {
 
   User? getSettlementUser() {
     for (final paidBy in _paidBy.keys) {
-      if (paidBy != me.id) {
+      if (paidBy != myUserId) {
         return GroupUsersDataStore().getUser(paidBy)!;
       }
     }

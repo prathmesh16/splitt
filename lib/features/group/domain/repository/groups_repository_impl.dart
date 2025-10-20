@@ -1,5 +1,6 @@
 import 'package:splitt/features/group/data/api/group_api_service.dart';
 import 'package:splitt/features/group/data/api/group_api_service_impl.dart';
+import 'package:splitt/features/group/data/models/group_dashboard_model.dart';
 import 'package:splitt/features/group/data/models/group_model.dart';
 import 'package:splitt/features/group/domain/repository/groups_repository.dart';
 
@@ -15,5 +16,11 @@ class GroupsRepositoryImpl implements GroupsRepository {
     final response = await _groupAPIService.getAllGroups();
     final groups = response.data as List;
     return groups.map((group) => GroupModel.fromJson(group)).toList();
+  }
+
+  @override
+  Future<GroupDashboardModel> getGroupDashboard(String userId) async {
+    final response = await _groupAPIService.getGroupDashboard(userId);
+    return GroupDashboardModel.fromJson(response.data);
   }
 }

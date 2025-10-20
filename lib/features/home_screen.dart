@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:splitt/features/accounts/presentation/views/accounts_screen.dart';
-import 'package:splitt/features/group/presentation/views/groups_list_screen.dart';
+import 'package:splitt/features/group/presentation/views/groups_dashboard_screen.dart';
 import 'package:splitt/features/users/presentation/bloc/my_details_bloc.dart';
 import 'package:splitt/theme/theme_extension.dart';
 
@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = const [
     Center(child: Text("Friends")),
-    Center(child: GroupsListScreen()),
+    Center(child: GroupDashboardScreen()),
     Center(child: Text("Activity")),
     Center(child: AccountsScreen()),
   ];

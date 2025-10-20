@@ -12,6 +12,10 @@ class Success<T> implements UIState<T> {
   final T data;
 
   const Success(this.data);
+
+  T getData() {
+    return data;
+  }
 }
 
 class Failure<T> implements UIState<T> {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:splitt/common/utils/constants.dart';
+import 'package:splitt/features/auth/data/models/token_model.dart';
 import 'package:splitt/features/core/domain/token_storage.dart';
 import 'package:splitt/features/core/models/api_response.dart';
 import 'package:splitt/features/core/models/request_type.dart';
@@ -178,10 +179,8 @@ class BaseAPIService {
         final newRefreshToken = body['refreshToken'];
 
         if (accessToken != null && newRefreshToken != null) {
-          await _tokenStorage.saveTokens(
-            accessToken: accessToken,
-            refreshToken: newRefreshToken,
-          );
+          final tokenModel = TokenModel.fromJson(body);
+          await _tokenStorage.saveToken(tokenModel: tokenModel);
           return true;
         }
       }

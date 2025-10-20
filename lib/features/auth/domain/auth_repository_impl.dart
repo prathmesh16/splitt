@@ -27,10 +27,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     final TokenModel tokenModel = TokenModel.fromJson(response.data);
 
-    await _tokenStorage.saveTokens(
-      accessToken: tokenModel.accessToken,
-      refreshToken: tokenModel.refreshToken,
-    );
+    await _tokenStorage.saveToken(tokenModel: tokenModel);
   }
 
   @override
@@ -41,4 +38,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> logout() async => _tokenStorage.clear();
+
+  @override
+  Future<String?> getUserId() async => _tokenStorage.getUserId();
 }
