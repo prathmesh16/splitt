@@ -18,6 +18,8 @@ abstract class IColors {
   Color get black;
 
   Color get inactiveColor;
+
+  Color get darkPrimary;
 }
 
 class LightColors implements IColors {
@@ -47,4 +49,7 @@ class LightColors implements IColors {
 
   @override
   Color get inactiveColor => const Color(0xFFc9d3dc);
+
+  @override
+  Color get darkPrimary => const Color(0xFF1c856c);
 }

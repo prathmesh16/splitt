@@ -79,7 +79,6 @@ class EqualSplit extends StatelessWidget {
                     ),
                     Checkbox(
                       value: expense.selectedUsersLength == users.length,
-                      activeColor: Constants.primaryColor,
                       shape: const CircleBorder(),
                       onChanged: (bool? isSelected) {
                         if (isSelected == true) {
@@ -194,7 +193,6 @@ class _UserTile extends StatelessWidget {
               const Spacer(),
               Checkbox(
                 value: expense.isUserSelected(user.id),
-                activeColor: Constants.primaryColor,
                 shape: const CircleBorder(),
                 onChanged: (bool? isSelected) {
                   if (isSelected == true) {
