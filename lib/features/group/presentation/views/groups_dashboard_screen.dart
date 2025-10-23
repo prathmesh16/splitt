@@ -106,14 +106,17 @@ class _GroupsList extends StatelessWidget {
                   Text(
                     groupDashboard.totalBalance > 0
                         ? "Overall, you are owed "
-                        : "Overall, you owes ",
+                        : groupDashboard.totalBalance < 0
+                            ? "Overall, you owes "
+                            : "You are all settled up",
                     style: context.f.body1.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  CurrencyAmount(
-                    amount:
-                        groupDashboard.totalBalance.abs().toStringAsFixed(2),
+                  if (groupDashboard.totalBalance != 0)
+                    CurrencyAmount(
+                      amount:
+                          groupDashboard.totalBalance.abs().toStringAsFixed(2),
                     style: context.f.body1.copyWith(
                       fontWeight: FontWeight.w600,
                       color: groupDashboard.totalBalance > 0
@@ -158,8 +161,8 @@ class _GroupTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        final res = await Navigator.push(
           context,
           slideFromRight(
             GroupDetails(
@@ -167,6 +170,7 @@ class _GroupTile extends StatelessWidget {
             ),
           ),
         );
+        if (res == true) {}
       },
       child: Padding(
         padding: const EdgeInsets.only(

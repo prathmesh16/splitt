@@ -1,4 +1,5 @@
 import 'package:splitt/features/group/data/models/group_model.dart';
+import 'package:splitt/features/users/domain/user_data_store.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
 
 class Group {
@@ -21,5 +22,9 @@ class Group {
       description: group.description,
       users: group.users.map((user) => User.fromUserModel(user)).toList(),
     );
+  }
+
+  bool shouldShowAddMembersButton() {
+    return users.where((user) => user.id != UserDataStore().userId).isEmpty;
   }
 }
