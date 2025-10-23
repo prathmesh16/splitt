@@ -72,7 +72,12 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
                 bloc: groupDashboardBloc,
                 builder: (_, UIState state) {
                   if (state is Success<GroupDashboard>) {
-                    return _GroupsList(groupDashboard: state.data);
+                    return _GroupsList(
+                      groupDashboard: state.data,
+                      onDone: () {
+                        groupDashboardBloc.getGroupDashboard();
+                      },
+                    );
                   }
                   return const Center(child: CircularProgressIndicator());
                 },
@@ -87,9 +92,11 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
 
 class _GroupsList extends StatelessWidget {
   final GroupDashboard groupDashboard;
+  final VoidCallback? onDone;
 
   const _GroupsList({
     required this.groupDashboard,
+    this.onDone,
   });
 
   @override
@@ -140,6 +147,7 @@ class _GroupsList extends StatelessWidget {
               itemBuilder: (_, index) {
                 return _GroupTile(
                   group: groupDashboard.groups[index],
+                  onDOne: onDone,
                 );
               },
             ),
@@ -152,10 +160,12 @@ class _GroupsList extends StatelessWidget {
 
 class _GroupTile extends StatelessWidget {
   final GroupBalance group;
+  final VoidCallback? onDOne;
 
   const _GroupTile({
     super.key,
     required this.group,
+    this.onDOne,
   });
 
   @override
@@ -170,7 +180,9 @@ class _GroupTile extends StatelessWidget {
             ),
           ),
         );
-        if (res == true) {}
+        if (res == true) {
+          onDOne?.call();
+        }
       },
       child: Padding(
         padding: const EdgeInsets.only(
