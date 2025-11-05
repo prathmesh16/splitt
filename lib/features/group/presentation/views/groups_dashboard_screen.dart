@@ -72,7 +72,12 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
                 bloc: groupDashboardBloc,
                 builder: (_, UIState state) {
                   if (state is Success<GroupDashboard>) {
-                    return _GroupsList(groupDashboard: state.data);
+                    return _GroupsList(
+                      groupDashboard: state.data,
+                      onDone: () {
+                        groupDashboardBloc.getGroupDashboard();
+                      },
+                    );
                   }
                   return const Center(child: CircularProgressIndicator());
                 },
@@ -87,9 +92,11 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
 
 class _GroupsList extends StatelessWidget {
   final GroupDashboard groupDashboard;
+  final VoidCallback? onDone;
 
   const _GroupsList({
     required this.groupDashboard,
+    this.onDone,
   });
 
   @override
@@ -106,14 +113,17 @@ class _GroupsList extends StatelessWidget {
                   Text(
                     groupDashboard.totalBalance > 0
                         ? "Overall, you are owed "
-                        : "Overall, you owes ",
+                        : groupDashboard.totalBalance < 0
+                            ? "Overall, you owes "
+                            : "You are all settled up",
                     style: context.f.body1.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  CurrencyAmount(
-                    amount:
-                        groupDashboard.totalBalance.abs().toStringAsFixed(2),
+                  if (groupDashboard.totalBalance != 0)
+                    CurrencyAmount(
+                      amount:
+                          groupDashboard.totalBalance.abs().toStringAsFixed(2),
                     style: context.f.body1.copyWith(
                       fontWeight: FontWeight.w600,
                       color: groupDashboard.totalBalance > 0
@@ -137,6 +147,7 @@ class _GroupsList extends StatelessWidget {
               itemBuilder: (_, index) {
                 return _GroupTile(
                   group: groupDashboard.groups[index],
+                  onDOne: onDone,
                 );
               },
             ),
@@ -149,17 +160,19 @@ class _GroupsList extends StatelessWidget {
 
 class _GroupTile extends StatelessWidget {
   final GroupBalance group;
+  final VoidCallback? onDOne;
 
   const _GroupTile({
     super.key,
     required this.group,
+    this.onDOne,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        final res = await Navigator.push(
           context,
           slideFromRight(
             GroupDetails(
@@ -167,6 +180,9 @@ class _GroupTile extends StatelessWidget {
             ),
           ),
         );
+        if (res == true) {
+          onDOne?.call();
+        }
       },
       child: Padding(
         padding: const EdgeInsets.only(

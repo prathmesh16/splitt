@@ -47,7 +47,17 @@ class AppTheme {
         ),
       ),
       checkboxTheme: CheckboxThemeData(
-        fillColor: WidgetStateProperty.all(colors.primaryColor),
+        side: BorderSide(
+          color: colors.secondaryTextColor,
+          width: 1.5,
+        ),
+        fillColor: WidgetStateProperty.fromMap(
+          <WidgetStatesConstraint, Color?>{
+            WidgetState.focused: colors.darkPrimary,
+            WidgetState.selected: colors.darkPrimary,
+            WidgetState.disabled: colors.inactiveColor,
+          },
+        ),
       ),
     );
   }

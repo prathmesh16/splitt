@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/common/utils/constants.dart';
+import 'package:splitt/common/utils/keys.dart';
 import 'package:splitt/features/auth/data/models/token_model.dart';
+import 'package:splitt/features/auth/presentation/views/login_screen.dart';
 import 'package:splitt/features/core/domain/token_storage.dart';
 import 'package:splitt/features/core/models/api_response.dart';
 import 'package:splitt/features/core/models/request_type.dart';
@@ -155,9 +158,22 @@ class BaseAPIService {
 
     if (statusCode >= 200 && statusCode < 300) {
       return apiResponse;
+    } else if (statusCode == 403) {
+      _logout();
+      throw Exception('HTTP Error ${response.statusCode}');
     } else {
       throw Exception('HTTP Error ${response.statusCode}');
     }
+  }
+
+  void _logout() async {
+    await _tokenStorage.clear();
+    navigatorKey.currentState?.pushAndRemoveUntil(
+      slideFromRight(const LoginScreen()),
+      (route) {
+        return route.settings.name == "/";
+      },
+    );
   }
 
   /// ---------------- REFRESH TOKEN LOGIC ----------------
