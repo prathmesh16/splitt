@@ -5,10 +5,12 @@ import 'package:splitt/features/group/presentation/models/group_member.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
 
 class SelectedMembers extends ChangeNotifier {
+  final String groupId;
   final Map<String, GroupMember> _users = {};
   final Map<String, GroupMember> _alreadyMembers = {};
 
   SelectedMembers({
+    required this.groupId,
     required List<User> alreadyMembers,
   }) {
     for (var member in alreadyMembers) {

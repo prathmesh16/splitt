@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:splitt/common/button.dart';
+import 'package:splitt/features/core/models/ui_state.dart';
+import 'package:splitt/features/group/presentation/bloc/add_group_members_bloc.dart';
 import 'package:splitt/features/group/presentation/models/selected_members.dart';
 import 'package:splitt/theme/theme_extension.dart';
 
@@ -153,20 +156,60 @@ class AddGroupMembersReviewScreen extends StatelessWidget {
                 },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 16,
-              ),
-              child: Button(
-                onTap: () {},
-                label: "Add members",
-              ),
-            ),
+            const _AddMembersButton(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AddMembersButton extends StatefulWidget {
+  const _AddMembersButton({super.key});
+
+  @override
+  State<_AddMembersButton> createState() => _AddMembersButtonState();
+}
+
+class _AddMembersButtonState extends State<_AddMembersButton> {
+  final addGroupMembersBloc = AddGroupMembersBloc();
+
+  late final SelectedMembers selectedMembers;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedMembers = context.read<SelectedMembers>();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+      ),
+      child: BlocConsumer(
+          bloc: addGroupMembersBloc,
+          listener: (context, UIState state) {
+            if (state is Success) {
+              Navigator.pop(context, true);
+              Navigator.pop(context, true);
+            }
+          },
+          builder: (context, UIState state) {
+            return Button(
+              state: state is Loading ? ButtonState.loading : ButtonState.idle,
+              onTap: () {
+                addGroupMembersBloc.addMembersToGroup(
+                  selectedMembers.groupId,
+                  selectedMembers,
+                );
+              },
+              label: "Add members",
+            );
+          }),
     );
   }
 }

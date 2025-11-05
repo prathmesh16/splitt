@@ -5,6 +5,8 @@ import 'package:splitt/features/auth/presentation/views/login_screen.dart';
 import 'package:splitt/features/home_screen.dart';
 import 'package:splitt/theme/theme.dart';
 
+import 'common/utils/keys.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final authBloc = AuthBloc();
@@ -29,6 +31,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Splitwise',
+      navigatorKey: navigatorKey,
       theme: AppTheme.lightTheme,
       home: context.read<AuthBloc>().state.isLoggedIn
           ? const HomeScreen()

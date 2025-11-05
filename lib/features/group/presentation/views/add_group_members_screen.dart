@@ -33,6 +33,7 @@ class _AddGroupMembersScreenState extends State<AddGroupMembersScreen> {
     super.initState();
     getMembersBloc.getMembers();
     selectedMembers = SelectedMembers(
+      groupId: widget.group.id,
       alreadyMembers: widget.group.users,
     );
   }

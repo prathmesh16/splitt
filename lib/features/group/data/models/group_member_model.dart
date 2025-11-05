@@ -25,6 +25,8 @@ class GroupMemberModel {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
+      //TODO : remove userId key when backend fix bug in group users
+      "userId": id,
       "name": name,
       "mobile": mobile,
       "email": email,
