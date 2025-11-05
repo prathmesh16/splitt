@@ -23,9 +23,11 @@ class Expense extends ChangeNotifier {
   Map<String, double> _paidBy = {};
   final User me = UserDataStore().me!;
   final String myUserId = UserDataStore().userId;
-  late final DateTime timeStamp;
+  late final DateTime createdAt;
   final String groupId;
-  final User createdBy = UserDataStore().me!;
+  late final User createdBy;
+  User? updatedBy;
+  DateTime? updatedAt;
 
   final bool isSettleUp;
 
@@ -37,7 +39,11 @@ class Expense extends ChangeNotifier {
     List<String>? selectedUsers,
     this.isSettleUp = false,
     DateTime? timeStamp,
+    User? createdBy,
+    this.updatedBy,
+    this.updatedAt,
   }) {
+    this.createdBy = createdBy ?? UserDataStore().me!;
     _splitType = SplitType.equal;
     _selectedUsers = selectedUsers ?? users.map((user) => user.id).toList();
     for (var user in users) {
@@ -45,7 +51,7 @@ class Expense extends ChangeNotifier {
     }
     _amount = amount;
     _paidBy[myUserId] = amount;
-    this.timeStamp = timeStamp ?? DateTime.now();
+    this.createdAt = timeStamp ?? DateTime.now();
   }
 
   set amount(double amount) {
@@ -346,7 +352,13 @@ class Expense extends ChangeNotifier {
       amount: expenseModel.amount,
       selectedUsers: expenseModel.participantIds,
       isSettleUp: expenseModel.isSettleUp,
-      timeStamp: expenseModel.timeStamp,
+      timeStamp: expenseModel.createdAt,
+      createdBy: expenseModel.createdBy != null
+          ? User.fromUserModel(expenseModel.createdBy!)
+          : null,
+      updatedBy: expenseModel.updatedBy != null
+          ? User.fromUserModel(expenseModel.updatedBy!)
+          : null,
     )
       ..name = expenseModel.title
       .._paidBy = {expenseModel.payerId: expenseModel.amount}
@@ -354,8 +366,12 @@ class Expense extends ChangeNotifier {
       .._setSplitDetails(expenseModel);
   }
 
-  String getFormattedDate([String format = "dd MMMM yyyy"]) {
-    return DateFormat(format).format(timeStamp);
+  String getFormattedCreatedAt([String format = "dd MMMM yyyy"]) {
+    return DateFormat(format).format(createdAt);
+  }
+
+  String getFormattedUpdatedAt([String format = "dd MMMM yyyy"]) {
+    return updatedAt != null ? DateFormat(format).format(updatedAt!) : "";
   }
 
   String getFormattedAmount() {
@@ -370,7 +386,10 @@ class Expense extends ChangeNotifier {
       amount: amount,
       selectedUsers: selectedUsers.toList(),
       isSettleUp: isSettleUp,
-      timeStamp: timeStamp,
+      timeStamp: createdAt,
+      createdBy: createdBy,
+      updatedBy: updatedBy,
+      updatedAt: updatedAt,
     )
       ..name = name
       .._paidBy.clear()
@@ -393,6 +412,8 @@ class Expense extends ChangeNotifier {
     _percentages = expense._percentages;
     _shares = expense._shares;
     _adjustments = expense._adjustments;
+    updatedBy = expense.updatedBy;
+    updatedAt = expense.updatedAt;
   }
 
   String getSettledToUser() {
@@ -425,6 +446,15 @@ class Expense extends ChangeNotifier {
     }
     return createdBy.name;
   }
+
+  String getExpenseUpdatedBy() {
+    if (me.id == updatedBy?.id) {
+      return "you";
+    }
+    return updatedBy?.name ?? "";
+  }
+
+  bool get isExpenseUpdated => updatedBy != null;
 
   bool isPaidForMySelf() {
     final paidById = getPaidByID();

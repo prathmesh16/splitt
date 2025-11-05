@@ -430,13 +430,13 @@ class _ExpenseList extends StatelessWidget {
             children: [
               if (index == 0 ||
                   !(savedExpenses[index - 1]
-                      .timeStamp
-                      .isSameMonth(savedExpenses[index].timeStamp)))
+                      .createdAt
+                      .isSameMonth(savedExpenses[index].createdAt)))
                 Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
                     DateFormat("MMMM yyyy")
-                        .format(savedExpenses[index].timeStamp),
+                        .format(savedExpenses[index].createdAt),
                     style: context.f.body3.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -493,13 +493,13 @@ class _ExpenseItem extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    DateFormat("MMM").format(expense.timeStamp),
+                    DateFormat("MMM").format(expense.createdAt),
                     style: context.f.body3.copyWith(
                       color: context.c.secondaryTextColor,
                     ),
                   ),
                   Text(
-                    DateFormat("dd").format(expense.timeStamp),
+                    DateFormat("dd").format(expense.createdAt),
                     style: context.f.body2.copyWith(
                       color: context.c.secondaryTextColor,
                     ),
