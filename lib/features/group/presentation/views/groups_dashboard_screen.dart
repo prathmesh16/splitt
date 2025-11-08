@@ -234,7 +234,7 @@ class _GroupTile extends StatelessWidget {
                       ),
                     ),
                     CurrencyAmount(
-                      amount: group.totalBalance.toStringAsFixed(2),
+                      amount: group.totalBalance.abs().toStringAsFixed(2),
                       style: context.f.body1.copyWith(
                         color: group.totalBalance > 0
                             ? context.c.primaryColor
@@ -262,7 +262,8 @@ class _GroupTile extends StatelessWidget {
                           ),
                         ),
                         CurrencyAmount(
-                          amount: memberBalance.balance.toStringAsFixed(2),
+                          amount:
+                              memberBalance.balance.abs().toStringAsFixed(2),
                           style: context.f.body3.copyWith(
                             color: memberBalance.balance > 0
                                 ? context.c.primaryColor

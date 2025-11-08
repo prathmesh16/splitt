@@ -17,7 +17,10 @@ class ExpenseModel {
   final Map<String, dynamic> splitDetails;
   final Map<String, double> shares;
   final bool isSettleUp;
-  final DateTime? timeStamp;
+  final DateTime? createdAt;
+  final UserModel? createdBy;
+  final UserModel? updatedBy;
+  final DateTime? updatedAt;
 
   ExpenseModel({
     this.id,
@@ -32,7 +35,10 @@ class ExpenseModel {
     this.splitDetails = const {},
     this.shares = const {},
     this.isSettleUp = false,
-    this.timeStamp,
+    this.createdAt,
+    this.createdBy,
+    this.updatedBy,
+    this.updatedAt,
   });
 
   Map<String, dynamic> toJson() {
@@ -80,8 +86,16 @@ class ExpenseModel {
       shares: Utils.convertMapValuesToType<double>(json['shares']),
       splitDetails: json["splitDetails"] ?? {},
       isSettleUp: json["isSettleUp"] ?? false,
-      timeStamp:
+      createdAt:
           json["timestamp"] != null ? DateTime.parse(json["timestamp"]) : null,
+      createdBy: json["createdBy"] != null
+          ? UserModel.fromJson(json["createdBy"])
+          : null,
+      updatedBy: json["updatedBy"] != null
+          ? UserModel.fromJson(json["updatedBy"])
+          : null,
+      updatedAt:
+          json["updatedAt"] != null ? DateTime.parse(json["updatedAt"]) : null,
     );
   }
 }

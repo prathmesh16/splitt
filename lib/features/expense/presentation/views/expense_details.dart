@@ -11,6 +11,7 @@ import 'package:splitt/features/expense/presentation/views/add_edit_expense_scre
 import 'package:splitt/features/expense/presentation/views/delete_button.dart';
 import 'package:splitt/features/settle_up/presentation/views/record_payment_screen.dart';
 import 'package:splitt/features/expense/presentation/views/expense_provider.dart';
+import 'package:splitt/features/users/domain/user_data_store.dart';
 import 'package:splitt/theme/theme_extension.dart';
 
 class ExpenseDetails extends StatefulWidget {
@@ -103,6 +104,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                       onSave: () {
                                         setState(() {
                                           isExpenseEdited = true;
+                                          expense.updatedBy =
+                                              UserDataStore().me!;
+                                          expense.updatedAt = DateTime.now();
                                           widget.expense.updateExpense(expense);
                                         });
                                       },
@@ -152,11 +156,18 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             ),
                           ),
                           Text(
-                            "Added by ${widget.expense.getExpenseAddedBy()} on ${widget.expense.getFormattedDate()}",
+                            "Added by ${widget.expense.getExpenseAddedBy()} on ${widget.expense.getFormattedCreatedAt()}",
                             style: context.f.body2.copyWith(
                               color: context.c.secondaryTextColor,
                             ),
                           ),
+                          if (widget.expense.isExpenseUpdated)
+                            Text(
+                              "Last updated by ${widget.expense.getExpenseUpdatedBy()} on ${widget.expense.getFormattedUpdatedAt()}",
+                              style: context.f.body2.copyWith(
+                                color: context.c.secondaryTextColor,
+                              ),
+                            ),
                         ],
                       ),
                     ),
