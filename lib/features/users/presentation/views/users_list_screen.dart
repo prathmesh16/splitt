@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:splitt/common/custom_divider.dart';
-import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
-import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
 import 'package:splitt/features/users/presentation/bloc/users_bloc.dart';
 

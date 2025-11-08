@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/models/expense.dart';
-import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/split/views/adjustment_split.dart';
 import 'package:splitt/features/split/views/amount_split.dart';
 import 'package:splitt/features/split/views/equal_split.dart';
@@ -10,6 +9,7 @@ import 'package:splitt/features/split/models/spilt_type.dart';
 import 'package:collection/collection.dart' show ListExtensions;
 import 'package:splitt/features/split/views/percentage_split.dart';
 import 'package:splitt/features/split/views/share_split.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class SplitScreen extends StatefulWidget {
   final VoidCallback onDone;
@@ -63,10 +63,10 @@ class _SplitScreenState extends State<SplitScreen>
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: const Text(
+                    child: Text(
                       "Cancel",
                       style: TextStyle(
-                        color: Constants.primaryColor,
+                        color: context.c.primaryColor,
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
                       ),
@@ -83,10 +83,10 @@ class _SplitScreenState extends State<SplitScreen>
                       Navigator.pop(context);
                       widget.onDone.call();
                     },
-                    child: const Text(
+                    child: Text(
                       "Done",
                       style: TextStyle(
-                        color: Constants.primaryColor,
+                        color: context.c.primaryColor,
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
                       ),
@@ -127,7 +127,7 @@ class _SplitScreenState extends State<SplitScreen>
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
                                             color: _isTabSelected(type)
-                                                ? Constants.primaryColor
+                                                ? context.c.primaryColor
                                                 : null,
                                             border: Border.all(
                                               color: const Color(0xFFacb0af),

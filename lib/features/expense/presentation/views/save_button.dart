@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
 import 'package:splitt/features/expense/presentation/bloc/expense_bloc.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class SaveButton extends StatefulWidget {
   final ExpenseBloc expenseBloc;
@@ -69,10 +69,10 @@ class _SaveButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: const Text(
+      child: Text(
         "Save",
         style: TextStyle(
-          color: Constants.primaryColor,
+          color: context.c.primaryColor,
           fontWeight: FontWeight.w500,
           fontSize: 14,
         ),

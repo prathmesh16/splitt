@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
-import 'package:splitt/common/utils/constants.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class ShareSplit extends StatelessWidget {
   final List<User> users;
@@ -196,14 +196,14 @@ class _UserTileState extends State<_UserTile> {
                         color: Colors.grey[400],
                       ),
                       isDense: true,
-                      focusedBorder: const UnderlineInputBorder(
+                      focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: Constants.primaryColor,
+                          color: context.c.primaryColor,
                           width: 2,
                         ),
                       ),
                     ),
-                    cursorColor: Constants.primaryColor,
+                    cursorColor: context.c.primaryColor,
                     onChanged: (String? value) {
                       expense.setShare(
                           widget.user.id, double.tryParse(value ?? ""));
