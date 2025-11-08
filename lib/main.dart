@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:splitt/config/app_config.dart';
 import 'package:splitt/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:splitt/features/auth/presentation/views/login_screen.dart';
 import 'package:splitt/features/home_screen.dart';
@@ -8,6 +9,7 @@ import 'package:splitt/theme/theme.dart';
 import 'common/utils/keys.dart';
 
 void main() async {
+  appConfig = AppConfig();
   WidgetsFlutterBinding.ensureInitialized();
   final authBloc = AuthBloc();
   await authBloc.checkLoginStatus();

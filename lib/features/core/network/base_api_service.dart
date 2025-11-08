@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/common/utils/keys.dart';
+import 'package:splitt/config/app_config.dart';
 import 'package:splitt/features/auth/data/models/token_model.dart';
 import 'package:splitt/features/auth/presentation/views/login_screen.dart';
 import 'package:splitt/features/core/domain/token_storage.dart';
@@ -10,15 +12,16 @@ import 'package:splitt/features/core/models/api_response.dart';
 import 'package:splitt/features/core/models/request_type.dart';
 
 class BaseAPIService {
-  final String baseUrl;
+  late final String baseUrl;
   final TokenStorage _tokenStorage;
   final bool requiresAuth;
 
   BaseAPIService({
-    this.baseUrl = Constants.baseUrl,
     TokenStorage? tokenStorage,
     this.requiresAuth = true,
-  }) : _tokenStorage = tokenStorage ?? TokenStorage();
+  }) : _tokenStorage = tokenStorage ?? TokenStorage() {
+    baseUrl = appConfig.baseUrl;
+  }
 
   /// Build default headers with optional authorization
   Future<Map<String, String>> getDefaultHeaders() async {
@@ -50,6 +53,7 @@ class BaseAPIService {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
+    print(this.baseUrl);
     return _sendRequest(
       requestType: RequestType.post,
       endpoint: endpoint,
