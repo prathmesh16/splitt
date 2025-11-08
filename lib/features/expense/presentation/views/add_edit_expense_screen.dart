@@ -3,12 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:splitt/common/elevated_widget.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/common/page_transitions.dart';
-import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/expense/presentation/bloc/expense_bloc.dart';
 import 'package:splitt/features/expense/presentation/views/save_button.dart';
 import 'package:splitt/features/expense/presentation/views/expense_provider.dart';
 import 'package:splitt/features/expense/presentation/views/paid_by_screen.dart';
 import 'package:splitt/features/split/views/split_screen.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class AddEditExpenseScreen extends StatefulWidget {
   final VoidCallback onSave;
@@ -131,14 +131,14 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                                     fontWeight: FontWeight.normal,
                                   ),
                                   contentPadding: const EdgeInsets.only(top: 8),
-                                  focusedBorder: const UnderlineInputBorder(
+                                  focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: Constants.primaryColor,
+                                      color: context.c.primaryColor,
                                       width: 2,
                                     ),
                                   ),
                                 ),
-                                cursorColor: Constants.primaryColor,
+                                cursorColor: context.c.primaryColor,
                                 onChanged: (String? value) {
                                   expense.name = value ?? "";
                                 },
@@ -169,14 +169,14 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                                     color: Colors.grey[400],
                                   ),
                                   contentPadding: const EdgeInsets.only(top: 8),
-                                  focusedBorder: const UnderlineInputBorder(
+                                  focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: Constants.primaryColor,
+                                      color: context.c.primaryColor,
                                       width: 2,
                                     ),
                                   ),
                                 ),
-                                cursorColor: Constants.primaryColor,
+                                cursorColor: context.c.primaryColor,
                                 onChanged: (String? value) {
                                   ScaffoldMessenger.of(context)
                                       .clearSnackBars();

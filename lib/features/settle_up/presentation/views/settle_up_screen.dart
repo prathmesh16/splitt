@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/page_transitions.dart';
-import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/expense/presentation/bloc/save_expense_bloc.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/group/presentation/models/group_expense.dart';
 import 'package:splitt/features/settle_up/presentation/views/record_payment_screen.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class SettleUpScreen extends StatelessWidget {
   final GroupExpense groupExpense;
@@ -162,8 +162,8 @@ class _UserTile extends StatelessWidget {
                   amount < 0 ? "you owe" : "owes you",
                   style: TextStyle(
                     color: amount > 0
-                        ? Constants.lentColor
-                        : Constants.borrowedColor,
+                        ? context.c.primaryColor
+                        : context.c.secondaryColor,
                     fontSize: 14,
                   ),
                 ),
@@ -171,8 +171,8 @@ class _UserTile extends StatelessWidget {
                   "₹${amount.abs().toStringAsFixed(2)}",
                   style: TextStyle(
                     color: amount > 0
-                        ? Constants.lentColor
-                        : Constants.borrowedColor,
+                        ? context.c.primaryColor
+                        : context.c.secondaryColor,
                     fontSize: 20,
                   ),
                 ),

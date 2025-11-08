@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
-import 'package:splitt/common/utils/constants.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class PaidByScreen extends StatelessWidget {
   const PaidByScreen({super.key});
@@ -25,10 +25,10 @@ class PaidByScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: const Text(
+                    child: Text(
                       "Cancel",
                       style: TextStyle(
-                        color: Constants.primaryColor,
+                        color: context.c.primaryColor,
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
                       ),
@@ -157,10 +157,10 @@ class _UserTile extends StatelessWidget {
               ),
               const Spacer(),
               if (expense.paidByLength == 1 && expense.isUserPaid(user.id))
-                const Icon(
+                Icon(
                   Icons.check_rounded,
                   size: 12,
-                  color: Constants.primaryColor,
+                  color: context.c.primaryColor,
                 ),
             ],
           ),

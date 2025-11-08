@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:splitt/common/page_transitions.dart';
-import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/common/utils/keys.dart';
 import 'package:splitt/config/app_config.dart';
 import 'package:splitt/features/auth/data/models/token_model.dart';

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/elevated_widget.dart';
 import 'package:splitt/common/models/expense.dart';
-import 'package:splitt/common/utils/constants.dart';
 import 'package:splitt/features/expense/presentation/bloc/expense_bloc.dart';
 import 'package:splitt/features/expense/presentation/views/save_button.dart';
 import 'package:splitt/features/group/domain/group_users_data_store.dart';
 import 'package:splitt/features/users/domain/user_data_store.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class RecordPaymentScreen extends StatefulWidget {
   final User user;
@@ -167,14 +167,14 @@ class _RecordPaymentScreenState extends State<RecordPaymentScreen> {
                                 color: Colors.grey[400],
                               ),
                               isDense: true,
-                              focusedBorder: const UnderlineInputBorder(
+                              focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Constants.primaryColor,
+                                  color: context.c.primaryColor,
                                   width: 2,
                                 ),
                               ),
                             ),
-                            cursorColor: Constants.primaryColor,
+                            cursorColor: context.c.primaryColor,
                             cursorHeight: 36,
                             onChanged: (String? value) {
                               ScaffoldMessenger.of(context).clearSnackBars();
