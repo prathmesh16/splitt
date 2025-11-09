@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:splitt/common/add_expense_button.dart';
 import 'package:splitt/common/currency_amount.dart';
+import 'package:splitt/common/custom_refresh_indicator.dart';
 import 'package:splitt/common/elevated_widget.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/common/page_transitions.dart';
@@ -41,6 +42,7 @@ class _GroupDetailsState extends State<GroupDetails> {
   late final List<User> users;
   late final ExpensesBloc expensesBloc;
   bool _isModified = false;
+  final scrollController = ScrollController();
 
   @override
   void initState() {
@@ -93,6 +95,7 @@ class _GroupDetailsState extends State<GroupDetails> {
             },
           ),
           body: NestedScrollView(
+            controller: scrollController,
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
@@ -188,212 +191,220 @@ class _GroupDetailsState extends State<GroupDetails> {
               ];
             },
             body: SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.group.name,
-                            style: context.f.heading2,
-                          ),
-                          if (groupExpense.getFinalRemainingAmount() != 0)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    groupExpense.getFinalRemainingAmount() > 0
-                                        ? "You are owed "
-                                        : "You owe ",
-                                    style: context.f.body2.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: groupExpense
-                                                  .getFinalRemainingAmount() >
-                                              0
-                                          ? context.c.primaryColor
-                                          : context.c.secondaryColor,
-                                    ),
-                                  ),
-                                  CurrencyAmount(
-                                    amount: groupExpense
-                                        .getFormattedFinalRemainingAmount(),
-                                    style: context.f.body2.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: groupExpense
-                                                  .getFinalRemainingAmount() >
-                                              0
-                                          ? context.c.primaryColor
-                                          : context.c.secondaryColor,
-                                    ),
-                                  ),
-                                  Text(
-                                    " overall",
-                                    style: context.f.body2.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: groupExpense
-                                                  .getFinalRemainingAmount() >
-                                              0
-                                          ? context.c.primaryColor
-                                          : context.c.secondaryColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          if (groupExpense.savedExpenses.isEmpty)
-                            Text(
-                              "No expenses here yet",
-                              style: context.f.body3.copyWith(
-                                color: context.c.secondaryTextColor,
-                              ),
-                            )
-                          else if (groupExpense.getRemainingAmounts().isEmpty)
-                            Text(
-                              "You are all settled up in this group",
-                              style: context.f.body3.copyWith(
-                                color: context.c.secondaryTextColor,
-                              ),
-                            ),
-                          ...groupExpense
-                              .getRemainingAmounts()
-                              .map((id, amount) {
-                            return MapEntry(
-                              id,
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    amount > 0
-                                        ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you "
-                                        : "You owe ${users.firstWhere((user) => user.id == id).name} ",
-                                    style: context.f.body3,
-                                  ),
-                                  CurrencyAmount(
-                                    amount: amount.abs().toStringAsFixed(2),
-                                    style: context.f.body3,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).values,
-                        ],
-                      ),
-                    ),
-                    if (groupExpense.getFinalRemainingAmount() != 0)
+              child: CustomRefreshIndicator(
+                controller: scrollController,
+                onRefresh: () {
+                  return expensesBloc.getGroupExpenses(widget.group.id);
+                },
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
+                          horizontal: 32,
+                          vertical: 16,
                         ),
-                        child: SizedBox(
-                          width: 88,
-                          child: ElevatedWidget(
-                            verticalPadding: 4,
-                            backgroundColor: context.c.secondaryColor,
-                            onTap: () async {
-                              final res = await Navigator.push(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.group.name,
+                              style: context.f.heading2,
+                            ),
+                            if (groupExpense.getFinalRemainingAmount() != 0)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 4),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      groupExpense.getFinalRemainingAmount() > 0
+                                          ? "You are owed "
+                                          : "You owe ",
+                                      style: context.f.body2.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: groupExpense
+                                                    .getFinalRemainingAmount() >
+                                                0
+                                            ? context.c.primaryColor
+                                            : context.c.secondaryColor,
+                                      ),
+                                    ),
+                                    CurrencyAmount(
+                                      amount: groupExpense
+                                          .getFormattedFinalRemainingAmount(),
+                                      style: context.f.body2.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: groupExpense
+                                                    .getFinalRemainingAmount() >
+                                                0
+                                            ? context.c.primaryColor
+                                            : context.c.secondaryColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      " overall",
+                                      style: context.f.body2.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: groupExpense
+                                                    .getFinalRemainingAmount() >
+                                                0
+                                            ? context.c.primaryColor
+                                            : context.c.secondaryColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            if (groupExpense.savedExpenses.isEmpty)
+                              Text(
+                                "No expenses here yet",
+                                style: context.f.body3.copyWith(
+                                  color: context.c.secondaryTextColor,
+                                ),
+                              )
+                            else if (groupExpense.getRemainingAmounts().isEmpty)
+                              Text(
+                                "You are all settled up in this group",
+                                style: context.f.body3.copyWith(
+                                  color: context.c.secondaryTextColor,
+                                ),
+                              ),
+                            ...groupExpense
+                                .getRemainingAmounts()
+                                .map((id, amount) {
+                              return MapEntry(
+                                id,
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      amount > 0
+                                          ? "${users.firstWhere((user) => user.id == id).name.capitalize()} owes you "
+                                          : "You owe ${users.firstWhere((user) => user.id == id).name} ",
+                                      style: context.f.body3,
+                                    ),
+                                    CurrencyAmount(
+                                      amount: amount.abs().toStringAsFixed(2),
+                                      style: context.f.body3,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).values,
+                          ],
+                        ),
+                      ),
+                      if (groupExpense.getFinalRemainingAmount() != 0)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          child: SizedBox(
+                            width: 88,
+                            child: ElevatedWidget(
+                              verticalPadding: 4,
+                              backgroundColor: context.c.secondaryColor,
+                              onTap: () async {
+                                final res = await Navigator.push(
+                                  context,
+                                  slideFromBottom(
+                                    SettleUpScreen(
+                                      groupExpense: groupExpense,
+                                    ),
+                                  ),
+                                );
+                                if (res != null) {
+                                  expensesBloc
+                                      .getGroupExpenses(widget.group.id);
+                                }
+                              },
+                              child: Text(
+                                "Settle up",
+                                style: context.f.body2.copyWith(
+                                  color: context.c.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      //TODO : check this
+                      if (true || widget.group.shouldShowAddMembersButton())
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
                                 context,
                                 slideFromBottom(
-                                  SettleUpScreen(
-                                    groupExpense: groupExpense,
+                                  AddGroupMembersScreen(
+                                    group: widget.group,
                                   ),
                                 ),
                               );
-                              if (res != null) {
-                                expensesBloc.getGroupExpenses(widget.group.id);
-                              }
                             },
-                            child: Text(
-                              "Settle up",
-                              style: context.f.body2.copyWith(
-                                color: context.c.white,
-                                fontWeight: FontWeight.w600,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: context.c.primaryColor,
+                                borderRadius: BorderRadius.circular(24),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    //TODO : check this
-                    if (true || widget.group.shouldShowAddMembersButton())
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              slideFromBottom(
-                                AddGroupMembersScreen(
-                                  group: widget.group,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 16,
                                 ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: context.c.primaryColor,
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 16,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.person_add_alt_outlined,
-                                    color: context.c.white,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "Add members",
-                                    style: context.f.body2.copyWith(
-                                      fontWeight: FontWeight.w600,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.person_add_alt_outlined,
                                       color: context.c.white,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Add members",
+                                      style: context.f.body2.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: context.c.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    BlocConsumer(
-                      bloc: expensesBloc,
-                      listener: (_, state) {
-                        if (state is Success) {
-                          setState(() {
-                            groupExpense.savedExpenses = state.data.toList();
-                          });
-                        }
-                      },
-                      builder: (context, UIState state) {
-                        if (state is Success) {
-                          return _ExpenseList(
-                              savedExpenses: state.data,
-                              onModified: () {
-                                setState(() {
-                                  _isModified = true;
+                      BlocConsumer(
+                        bloc: expensesBloc,
+                        listener: (_, state) {
+                          if (state is Success) {
+                            setState(() {
+                              groupExpense.savedExpenses = state.data.toList();
+                            });
+                          }
+                        },
+                        builder: (context, UIState state) {
+                          if (state is Success) {
+                            return _ExpenseList(
+                                savedExpenses: state.data,
+                                onModified: () {
+                                  setState(() {
+                                    _isModified = true;
+                                  });
                                 });
-                              });
-                        }
-                        return const Center(child: CircularProgressIndicator());
-                      },
-                    ),
-                  ],
+                          }
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -433,7 +444,11 @@ class _ExpenseList extends StatelessWidget {
                       .createdAt
                       .isSameMonth(savedExpenses[index].createdAt)))
                 Padding(
-                  padding: const EdgeInsets.only(left: 16),
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    top: 16,
+                    bottom: 8,
+                  ),
                   child: Text(
                     DateFormat("MMMM yyyy")
                         .format(savedExpenses[index].createdAt),

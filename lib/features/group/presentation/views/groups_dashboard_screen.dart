@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/currency_amount.dart';
 import 'package:splitt/common/custom_divider.dart';
+import 'package:splitt/common/custom_refresh_indicator.dart';
 import 'package:splitt/common/hierarchy_widget.dart';
 import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/features/group/presentation/bloc/group_dashboard_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:splitt/features/core/models/ui_state.dart';
 import 'package:splitt/features/group/presentation/models/group_dashboard.dart';
 import 'package:splitt/features/group/presentation/views/create_group_screen.dart';
 import 'package:splitt/features/group/presentation/views/group_details.dart';
+import 'package:splitt/features/group/presentation/views/groups_dashboard_shimmer.dart';
 import 'package:splitt/theme/theme_extension.dart';
 
 class GroupDashboardScreen extends StatefulWidget {
@@ -66,21 +68,23 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
                 ],
               ),
             ),
-            BlocProvider(
-              create: (_) => groupDashboardBloc,
-              child: BlocBuilder<GroupDashboardBloc, UIState<GroupDashboard>>(
-                bloc: groupDashboardBloc,
-                builder: (_, UIState state) {
-                  if (state is Success<GroupDashboard>) {
-                    return _GroupsList(
-                      groupDashboard: state.data,
-                      onDone: () {
-                        groupDashboardBloc.getGroupDashboard();
-                      },
-                    );
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                },
+            Flexible(
+              child: BlocProvider(
+                create: (_) => groupDashboardBloc,
+                child: BlocBuilder<GroupDashboardBloc, UIState<GroupDashboard>>(
+                  bloc: groupDashboardBloc,
+                  builder: (_, UIState state) {
+                    if (groupDashboardBloc.dashboard != null) {
+                      return _GroupsList(
+                        groupDashboard: groupDashboardBloc.dashboard!,
+                        onDone: () {
+                          groupDashboardBloc.getGroupDashboard();
+                        },
+                      );
+                    }
+                    return const GroupsDashboardShimmer();
+                  },
+                ),
               ),
             ),
           ],
@@ -90,7 +94,7 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
   }
 }
 
-class _GroupsList extends StatelessWidget {
+class _GroupsList extends StatefulWidget {
   final GroupDashboard groupDashboard;
   final VoidCallback? onDone;
 
@@ -100,59 +104,69 @@ class _GroupsList extends StatelessWidget {
   });
 
   @override
+  State<_GroupsList> createState() => _GroupsListState();
+}
+
+class _GroupsListState extends State<_GroupsList> {
+  final scrollController = ScrollController();
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Text(
-                    groupDashboard.totalBalance > 0
-                        ? "Overall, you are owed "
-                        : groupDashboard.totalBalance < 0
-                            ? "Overall, you owes "
-                            : "You are all settled up",
-                    style: context.f.body1.copyWith(
-                      fontWeight: FontWeight.w600,
+    return CustomRefreshIndicator(
+      controller: scrollController,
+      onRefresh: context.read<GroupDashboardBloc>().getGroupDashboard,
+      child: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Text(
+                      widget.groupDashboard.totalBalance > 0
+                          ? "Overall, you are owed "
+                          : widget.groupDashboard.totalBalance < 0
+                              ? "Overall, you owes "
+                              : "You are all settled up",
+                      style: context.f.body1.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  if (groupDashboard.totalBalance != 0)
-                    CurrencyAmount(
-                      amount:
-                          groupDashboard.totalBalance.abs().toStringAsFixed(2),
-                    style: context.f.body1.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: groupDashboard.totalBalance > 0
-                          ? context.c.primaryColor
-                          : context.c.secondaryColor,
+                    if (widget.groupDashboard.totalBalance != 0)
+                      CurrencyAmount(
+                        amount: widget.groupDashboard.totalBalance
+                            .abs()
+                            .toStringAsFixed(2),
+                        style: context.f.body1.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: widget.groupDashboard.totalBalance > 0
+                              ? context.c.primaryColor
+                              : context.c.secondaryColor,
+                        ),
+                      ),
+                    const Spacer(),
+                    Icon(
+                      Icons.filter_list_rounded,
+                      color: context.c.secondaryTextColor,
                     ),
-                  ),
-                  const Spacer(),
-                  Icon(
-                    Icons.filter_list_rounded,
-                    color: context.c.secondaryTextColor,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              primary: false,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: groupDashboard.groups.length,
-              itemBuilder: (_, index) {
-                return _GroupTile(
-                  group: groupDashboard.groups[index],
-                  onDOne: onDone,
-                );
-              },
-            ),
-          ],
-        ),
+          ),
+          SliverList.builder(
+            itemBuilder: (_, index) {
+              return _GroupTile(
+                group: widget.groupDashboard.groups[index],
+                onDOne: widget.onDone,
+              );
+            },
+            itemCount: widget.groupDashboard.groups.length,
+          ),
+        ],
       ),
     );
   }
