@@ -8,6 +8,8 @@ import 'package:splitt/features/users/domain/user_data_store.dart';
 class GroupDashboardBloc extends Cubit<UIState<GroupDashboard>> {
   final GroupsRepository _groupsRepository;
 
+  GroupDashboard? dashboard;
+
   GroupDashboardBloc({
     GroupsRepository? groupsRepository,
   })  : _groupsRepository = groupsRepository ?? GroupsRepositoryImpl(),
@@ -22,6 +24,7 @@ class GroupDashboardBloc extends Cubit<UIState<GroupDashboard>> {
           await _groupsRepository.getGroupDashboard(userId);
       final groupDashboard =
           GroupDashboard.fromGroupDashboardModel(groupDashboardModel);
+      dashboard = groupDashboard;
       emit(Success(groupDashboard));
     } catch (e) {
       emit(Failure(e as Error));
