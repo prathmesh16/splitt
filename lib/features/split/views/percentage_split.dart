@@ -43,12 +43,14 @@ class PercentageSplit extends StatelessWidget {
                 children: [
                   Text(
                     "${expense.addedPercentage}% of 100%",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                    style: context.f.body1.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Text("${expense.remainingPercentage}% left"),
+                  Text(
+                    "${expense.remainingPercentage}% left",
+                    style: context.f.body2,
+                  ),
                 ],
               ),
             ),
@@ -168,9 +170,8 @@ class _UserTileState extends State<_UserTile> {
               const SizedBox(width: 16),
               Text(
                 widget.user.name,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: _isTextBold ? FontWeight.w500 : null,
+                style: context.f.body1.copyWith(
+                  fontWeight: _isTextBold ? FontWeight.w600 : null,
                 ),
               ),
               const Spacer(),
@@ -185,7 +186,7 @@ class _UserTileState extends State<_UserTile> {
                       hintText: "0",
                       contentPadding: const EdgeInsets.only(top: 12),
                       hintStyle: TextStyle(
-                        color: Colors.grey[400],
+                        color: context.c.inactiveColor,
                       ),
                       isDense: true,
                       focusedBorder: UnderlineInputBorder(
@@ -217,8 +218,10 @@ class _UserTileState extends State<_UserTile> {
                 ),
                 child: Text(
                   "%",
-                  style: TextStyle(
-                    color: _isTextBold ? Colors.black54 : Colors.black26,
+                  style: context.f.body2.copyWith(
+                    color: _isTextBold
+                        ? context.c.secondaryTextColor
+                        : context.c.inactiveColor,
                   ),
                 ),
               ),

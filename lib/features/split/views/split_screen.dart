@@ -63,32 +63,36 @@ class _SplitScreenState extends State<SplitScreen>
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(
-                        color: context.c.primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: context.c.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),
-                  const Text(
+                  Text(
                     "Split options",
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
+                    style: context.f.body2,
                   ),
                   InkWell(
                     onTap: () {
                       Navigator.pop(context);
                       widget.onDone.call();
                     },
-                    child: Text(
-                      "Done",
-                      style: TextStyle(
-                        color: context.c.primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        "Done",
+                        style: TextStyle(
+                          color: context.c.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),

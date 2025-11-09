@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:splitt/common/currency_amount.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
@@ -134,16 +135,16 @@ class _UserTileState extends State<_UserTile> {
                 children: [
                   Text(
                     widget.user.name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: _isTextBold ? FontWeight.w500 : null,
+                    style: context.f.body1.copyWith(
+                      fontWeight: _isTextBold ? FontWeight.w600 : null,
                     ),
                   ),
-                  Text(
-                    "₹${expense.getFormattedUserAdjustmentTotalAmount(widget.user.id)}",
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.black38,
+                  CurrencyAmount(
+                    amount: expense.getFormattedUserAdjustmentTotalAmount(
+                            widget.user.id) ??
+                        "",
+                    style: context.f.body3.copyWith(
+                      color: context.c.secondaryTextColor,
                     ),
                   ),
                 ],
@@ -154,7 +155,9 @@ class _UserTileState extends State<_UserTile> {
                 child: Text(
                   "+",
                   style: TextStyle(
-                    color: _isTextBold ? Colors.black54 : Colors.black26,
+                    color: _isTextBold
+                        ? context.c.secondaryTextColor
+                        : context.c.inactiveColor,
                   ),
                 ),
               ),
@@ -169,7 +172,7 @@ class _UserTileState extends State<_UserTile> {
                       hintText: "0.00",
                       contentPadding: const EdgeInsets.only(top: 12),
                       hintStyle: TextStyle(
-                        color: Colors.grey[400],
+                        color: context.c.inactiveColor,
                       ),
                       isDense: true,
                       focusedBorder: UnderlineInputBorder(

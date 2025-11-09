@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:splitt/common/currency_amount.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
@@ -41,14 +42,27 @@ class AmountSplit extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text(
-                    "₹${expense.addedAmount} of ₹${expense.amount}",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CurrencyAmount(
+                        amount: "${expense.addedAmount} of ",
+                        style: context.f.body1.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      CurrencyAmount(
+                        amount: expense.amount.toString(),
+                        style: context.f.body1.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text("₹${expense.remainingAmount} left"),
+                  CurrencyAmount(
+                    amount: "${expense.remainingAmount} left",
+                    style: context.f.body2,
+                  ),
                 ],
               ),
             ),
@@ -168,9 +182,8 @@ class _UserTileState extends State<_UserTile> {
               const SizedBox(width: 16),
               Text(
                 widget.user.name,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: _isTextBold ? FontWeight.w500 : null,
+                style: context.f.body1.copyWith(
+                  fontWeight: _isTextBold ? FontWeight.w600 : null,
                 ),
               ),
               const Spacer(),
@@ -179,7 +192,9 @@ class _UserTileState extends State<_UserTile> {
                 child: Icon(
                   Icons.currency_rupee,
                   size: 20,
-                  color: _isTextBold ? Colors.black54 : Colors.black26,
+                  color: _isTextBold
+                      ? context.c.secondaryTextColor
+                      : context.c.inactiveColor,
                 ),
               ),
               Padding(
@@ -193,7 +208,7 @@ class _UserTileState extends State<_UserTile> {
                       hintText: "0.00",
                       contentPadding: const EdgeInsets.only(top: 12),
                       hintStyle: TextStyle(
-                        color: Colors.grey[400],
+                        color: context.c.inactiveColor,
                       ),
                       isDense: true,
                       focusedBorder: UnderlineInputBorder(

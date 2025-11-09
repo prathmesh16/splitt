@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:splitt/common/currency_amount.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
+import 'package:splitt/theme/theme_extension.dart';
 
 class EqualSplit extends StatelessWidget {
   final List<User> users;
@@ -45,36 +47,35 @@ class EqualSplit extends StatelessWidget {
                           ? Center(
                               child: Text(
                                 "You must select at least one person to split with.",
-                                style: TextStyle(
+                                style: context.f.body3.copyWith(
                                   fontSize: 10,
-                                  color: Colors.red[400],
+                                  color: context.c.secondaryColor,
                                 ),
                               ),
                             )
                           : Column(
                               children: [
-                                Text(
-                                  "₹${expense.formattedEqualSplit}/person",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                CurrencyAmount(
+                                  amount:
+                                      "${expense.formattedEqualSplit}/person",
+                                  style: context.f.body1,
                                 ),
-                                Text("(${expense.selectedUsersLength} people)"),
+                                Text(
+                                  "(${expense.selectedUsersLength} people)",
+                                  style: context.f.body2,
+                                ),
                               ],
                             ),
                     ),
                     Container(
                       height: 34,
                       width: 2,
-                      color: Colors.grey[200],
+                      color: context.c.hintColor,
                     ),
                     const SizedBox(width: 16),
-                    const Text(
+                    Text(
                       "All",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: context.f.body2,
                     ),
                     Checkbox(
                       value: expense.selectedUsersLength == users.length,
@@ -183,10 +184,9 @@ class _UserTile extends StatelessWidget {
               const SizedBox(width: 16),
               Text(
                 user.name,
-                style: TextStyle(
-                  fontSize: 16,
+                style: context.f.body1.copyWith(
                   fontWeight:
-                      expense.isUserSelected(user.id) ? FontWeight.w500 : null,
+                      expense.isUserSelected(user.id) ? FontWeight.w600 : null,
                 ),
               ),
               const Spacer(),
