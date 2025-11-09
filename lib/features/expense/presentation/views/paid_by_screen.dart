@@ -25,24 +25,25 @@ class PaidByScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(
-                        color: context.c.primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: context.c.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Center(
                       child: Padding(
-                        padding: EdgeInsets.only(right: 48),
+                        padding: const EdgeInsets.only(right: 48),
                         child: Text(
                           "Choose payer",
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
+                          style: context.f.body2,
                         ),
                       ),
                     ),
@@ -51,7 +52,7 @@ class PaidByScreen extends StatelessWidget {
               ),
             ),
             CustomDivider(
-              color: Colors.grey[200],
+              color: context.c.hintColor,
             ),
             Expanded(
               child: Consumer<Expense>(
@@ -90,7 +91,7 @@ class _UserList extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: CustomDivider(
-            color: Colors.grey[200],
+            color: context.c.hintColor,
           ),
         );
       },
@@ -159,7 +160,7 @@ class _UserTile extends StatelessWidget {
               if (expense.paidByLength == 1 && expense.isUserPaid(user.id))
                 Icon(
                   Icons.check_rounded,
-                  size: 12,
+                  size: 20,
                   color: context.c.primaryColor,
                 ),
             ],

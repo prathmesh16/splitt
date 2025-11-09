@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
 import 'package:splitt/features/expense/presentation/bloc/expense_bloc.dart';
 import 'package:splitt/theme/theme_extension.dart';
@@ -41,11 +42,11 @@ class _SaveButtonState extends State<SaveButton> {
       },
       builder: (_, UIState state) {
         if (state is Loading) {
-          return const SizedBox(
-            height: 16,
-            width: 16,
-            child: CircularProgressIndicator(
-              strokeWidth: 2.5,
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: SpinKitThreeBounce(
+              color: context.c.primaryColor,
+              size: 20,
             ),
           );
         }
@@ -69,12 +70,17 @@ class _SaveButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Text(
-        "Save",
-        style: TextStyle(
-          color: context.c.primaryColor,
-          fontWeight: FontWeight.w500,
-          fontSize: 14,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 4,
+          horizontal: 2,
+        ),
+        child: Text(
+          "Save",
+          style: context.f.body2.copyWith(
+            color: context.c.primaryColor,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

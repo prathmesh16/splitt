@@ -72,7 +72,7 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                   ),
                   Text(
                     widget.expenseBloc.screenName,
-                    style: const TextStyle(
+                    style: context.f.body1.copyWith(
                       fontSize: 18,
                     ),
                   ),
@@ -125,10 +125,8 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                                 controller: nameController,
                                 decoration: InputDecoration(
                                   hintText: "Enter a description",
-                                  hintStyle: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.grey[400],
-                                    fontWeight: FontWeight.normal,
+                                  hintStyle: context.f.heading2.copyWith(
+                                    color: context.c.inactiveColor,
                                   ),
                                   contentPadding: const EdgeInsets.only(top: 8),
                                   focusedBorder: UnderlineInputBorder(
@@ -164,9 +162,8 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                                 controller: amountController,
                                 decoration: InputDecoration(
                                   hintText: "0.00",
-                                  hintStyle: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.grey[400],
+                                  hintStyle: context.f.heading2.copyWith(
+                                    color: context.c.inactiveColor,
                                   ),
                                   contentPadding: const EdgeInsets.only(top: 8),
                                   focusedBorder: UnderlineInputBorder(
@@ -196,7 +193,10 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Paid by"),
+                          Text(
+                            "Paid by",
+                            style: context.f.body2,
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: ElevatedWidget(
@@ -225,10 +225,16 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                                   );
                                 }
                               },
-                              child: Text(expense.getPaidBy()),
+                              child: Text(
+                                expense.getPaidBy(),
+                                style: context.f.body2,
+                              ),
                             ),
                           ),
-                          const Text("and split"),
+                          Text(
+                            "and split",
+                            style: context.f.body2,
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: ElevatedWidget(
@@ -265,7 +271,10 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                                   );
                                 }
                               },
-                              child: Text(expense.splitType.splitTypeName),
+                              child: Text(
+                                expense.splitType.splitTypeName,
+                                style: context.f.body2,
+                              ),
                             ),
                           ),
                         ],
