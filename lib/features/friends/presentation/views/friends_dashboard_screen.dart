@@ -6,6 +6,8 @@ import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/custom_refresh_indicator.dart';
 import 'package:splitt/common/hierarchy_widget.dart';
 import 'package:splitt/common/page_transitions.dart';
+import 'package:splitt/features/friends/presentation/bloc/friends_dashboard_bloc.dart';
+import 'package:splitt/features/friends/presentation/models/friends_dashboard.dart';
 import 'package:splitt/features/group/presentation/bloc/group_dashboard_bloc.dart';
 import 'package:splitt/features/group/presentation/bloc/groups_bloc.dart';
 import 'package:splitt/features/group/presentation/models/group.dart';
@@ -16,21 +18,21 @@ import 'package:splitt/features/group/presentation/views/group_details.dart';
 import 'package:splitt/features/group/presentation/views/groups_dashboard_shimmer.dart';
 import 'package:splitt/theme/theme_extension.dart';
 
-class GroupDashboardScreen extends StatefulWidget {
-  const GroupDashboardScreen({super.key});
+class FriendsDashboardScreen extends StatefulWidget {
+  const FriendsDashboardScreen({super.key});
 
   @override
-  State<GroupDashboardScreen> createState() => _GroupDashboardScreenState();
+  State<FriendsDashboardScreen> createState() => _FriendsDashboardScreenState();
 }
 
-class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
-  late final GroupDashboardBloc groupDashboardBloc;
+class _FriendsDashboardScreenState extends State<FriendsDashboardScreen> {
+  late final FriendsDashboardBloc friendsDashboardBloc;
 
   @override
   void initState() {
     super.initState();
-    groupDashboardBloc = context.read<GroupDashboardBloc>();
-    groupDashboardBloc.getGroupDashboard();
+    friendsDashboardBloc = context.read<FriendsDashboardBloc>();
+    friendsDashboardBloc.getFriendsDashboard();
   }
 
   @override
@@ -49,16 +51,10 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
                   const Spacer(),
                   InkWell(
                     onTap: () async {
-                      final res = await Navigator.push(
-                        context,
-                        slideFromBottom(const CreateGroupScreen()),
-                      );
-                      if (res == true) {
-                        groupDashboardBloc.getGroupDashboard();
-                      }
+                      //TODO : add Add friends action
                     },
                     child: Text(
-                      "Create group",
+                      "Add friends",
                       style: context.f.body2.copyWith(
                         color: context.c.primaryColor,
                         fontWeight: FontWeight.w600,
@@ -70,15 +66,16 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
             ),
             Flexible(
               child: BlocProvider.value(
-                value: groupDashboardBloc,
-                child: BlocBuilder<GroupDashboardBloc, UIState<GroupDashboard>>(
-                  bloc: groupDashboardBloc,
+                value: friendsDashboardBloc,
+                child: BlocBuilder<FriendsDashboardBloc,
+                    UIState<FriendsDashboard>>(
+                  bloc: friendsDashboardBloc,
                   builder: (_, UIState state) {
-                    if (groupDashboardBloc.dashboard != null) {
+                    if (friendsDashboardBloc.dashboard != null) {
                       return _GroupsList(
-                        groupDashboard: groupDashboardBloc.dashboard!,
+                        friendsDashboard: friendsDashboardBloc.dashboard!,
                         onDone: () {
-                          groupDashboardBloc.getGroupDashboard();
+                          friendsDashboardBloc.getFriendsDashboard();
                         },
                       );
                     }
@@ -95,11 +92,11 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
 }
 
 class _GroupsList extends StatefulWidget {
-  final GroupDashboard groupDashboard;
+  final FriendsDashboard friendsDashboard;
   final VoidCallback? onDone;
 
   const _GroupsList({
-    required this.groupDashboard,
+    required this.friendsDashboard,
     this.onDone,
   });
 
@@ -114,7 +111,7 @@ class _GroupsListState extends State<_GroupsList> {
   Widget build(BuildContext context) {
     return CustomRefreshIndicator(
       controller: scrollController,
-      onRefresh: context.read<GroupDashboardBloc>().getGroupDashboard,
+      onRefresh: context.read<FriendsDashboardBloc>().getFriendsDashboard,
       child: CustomScrollView(
         controller: scrollController,
         slivers: [
@@ -126,23 +123,23 @@ class _GroupsListState extends State<_GroupsList> {
                 child: Row(
                   children: [
                     Text(
-                      widget.groupDashboard.totalBalance > 0
+                      widget.friendsDashboard.totalBalance > 0
                           ? "Overall, you are owed "
-                          : widget.groupDashboard.totalBalance < 0
+                          : widget.friendsDashboard.totalBalance < 0
                               ? "Overall, you owes "
                               : "You are all settled up",
                       style: context.f.body1.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    if (widget.groupDashboard.totalBalance != 0)
+                    if (widget.friendsDashboard.totalBalance != 0)
                       CurrencyAmount(
-                        amount: widget.groupDashboard.totalBalance
+                        amount: widget.friendsDashboard.totalBalance
                             .abs()
                             .toStringAsFixed(2),
                         style: context.f.body1.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: widget.groupDashboard.totalBalance > 0
+                          color: widget.friendsDashboard.totalBalance > 0
                               ? context.c.primaryColor
                               : context.c.secondaryColor,
                         ),
@@ -159,12 +156,12 @@ class _GroupsListState extends State<_GroupsList> {
           ),
           SliverList.builder(
             itemBuilder: (_, index) {
-              return _GroupTile(
-                group: widget.groupDashboard.groups[index],
+              return _UserTile(
+                user: widget.friendsDashboard.users[index],
                 onDOne: widget.onDone,
               );
             },
-            itemCount: widget.groupDashboard.groups.length,
+            itemCount: widget.friendsDashboard.users.length,
           ),
         ],
       ),
@@ -172,13 +169,13 @@ class _GroupsListState extends State<_GroupsList> {
   }
 }
 
-class _GroupTile extends StatelessWidget {
-  final GroupBalance group;
+class _UserTile extends StatelessWidget {
+  final UserBalance user;
   final VoidCallback? onDOne;
 
-  const _GroupTile({
+  const _UserTile({
     super.key,
-    required this.group,
+    required this.user,
     this.onDOne,
   });
 
@@ -186,17 +183,7 @@ class _GroupTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        final res = await Navigator.push(
-          context,
-          slideFromRight(
-            GroupDetails(
-              group: group.group,
-            ),
-          ),
-        );
-        if (res == true) {
-          onDOne?.call();
-        }
+        //TODO : add User details tap action
       },
       child: Padding(
         padding: const EdgeInsets.only(
@@ -213,20 +200,20 @@ class _GroupTile extends StatelessWidget {
                 height: 48,
                 width: 48,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(24),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(24),
                   child: Image.asset("assets/images/group_avatar.png"),
                 ),
               ),
               const SizedBox(width: 16),
               Text(
-                group.group.name,
+                user.name,
                 style: context.f.body1,
               ),
               const Spacer(),
-              if (group.totalBalance == 0)
+              if (user.totalBalance == 0)
                 Text(
                   "settled up",
                   style: context.f.body3.copyWith(
@@ -239,18 +226,18 @@ class _GroupTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      group.totalBalance > 0 ? "you are owed" : "you owe",
+                      user.totalBalance > 0 ? "owes you" : "you owe",
                       style: context.f.body1.copyWith(
                         fontSize: 10,
-                        color: group.totalBalance > 0
+                        color: user.totalBalance > 0
                             ? context.c.primaryColor
                             : context.c.secondaryColor,
                       ),
                     ),
                     CurrencyAmount(
-                      amount: group.totalBalance.abs().toStringAsFixed(2),
+                      amount: user.totalBalance.abs().toStringAsFixed(2),
                       style: context.f.body1.copyWith(
-                        color: group.totalBalance > 0
+                        color: user.totalBalance > 0
                             ? context.c.primaryColor
                             : context.c.secondaryColor,
                       ),
@@ -259,29 +246,34 @@ class _GroupTile extends StatelessWidget {
                 ),
             ],
           ),
-          children: group.memberBalances
+          children: user.transactions
               //TODO : remove this once backend removes 0 balance entries
-              .where((memberBalance) => memberBalance.balance != 0)
-              .map((memberBalance) => Padding(
+              .where((transaction) => transaction.balance != 0)
+              .map((transaction) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          memberBalance.balance > 0
-                              ? "${memberBalance.user.name} owes you "
-                              : "You owe ${memberBalance.user.name} ",
+                          transaction.balance > 0
+                              ? "${user.name} owes you "
+                              : "You owe ${user.name} ",
                           style: context.f.body3.copyWith(
                             color: context.c.secondaryTextColor,
                           ),
                         ),
                         CurrencyAmount(
-                          amount:
-                              memberBalance.balance.abs().toStringAsFixed(2),
+                          amount: transaction.balance.abs().toStringAsFixed(2),
                           style: context.f.body3.copyWith(
-                            color: memberBalance.balance > 0
+                            color: transaction.balance > 0
                                 ? context.c.primaryColor
                                 : context.c.secondaryColor,
+                          ),
+                        ),
+                        Text(
+                          " in \"${transaction.name}\"",
+                          style: context.f.body3.copyWith(
+                            color: context.c.secondaryTextColor,
                           ),
                         ),
                       ],

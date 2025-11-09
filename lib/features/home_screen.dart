@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitt/features/accounts/presentation/views/accounts_screen.dart';
+import 'package:splitt/features/friends/presentation/bloc/friends_dashboard_bloc.dart';
+import 'package:splitt/features/friends/presentation/views/friends_dashboard_screen.dart';
+import 'package:splitt/features/group/presentation/bloc/group_dashboard_bloc.dart';
 import 'package:splitt/features/group/presentation/views/groups_dashboard_screen.dart';
+import 'package:splitt/features/group/presentation/views/groups_dashboard_shimmer.dart';
 import 'package:splitt/features/users/presentation/bloc/my_details_bloc.dart';
 import 'package:splitt/theme/theme_extension.dart';
 
@@ -14,12 +19,22 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 1;
 
-  final List<Widget> _pages = const [
-    Center(child: Text("Friends")),
-    Center(child: GroupDashboardScreen()),
-    Center(child: Text("Activity")),
-    Center(child: AccountsScreen()),
-  ];
+  List<Widget> get _pages => [
+        Center(
+          child: BlocProvider.value(
+            value: friendsDashboardBloc,
+            child: const FriendsDashboardScreen(),
+          ),
+        ),
+        Center(
+          child: BlocProvider.value(
+            value: groupDashboardBloc,
+            child: const GroupDashboardScreen(),
+          ),
+        ),
+        const Center(child: Text("Activity")),
+        const Center(child: AccountsScreen()),
+      ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -28,12 +43,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   late final MyDetailsBloc myDetailsBloc;
+  late final FriendsDashboardBloc friendsDashboardBloc;
+  late final GroupDashboardBloc groupDashboardBloc;
 
   @override
   void initState() {
     super.initState();
     myDetailsBloc = MyDetailsBloc();
     myDetailsBloc.getMyDetails();
+    friendsDashboardBloc = FriendsDashboardBloc();
+    groupDashboardBloc = GroupDashboardBloc();
   }
 
   @override
