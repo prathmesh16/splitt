@@ -34,11 +34,11 @@ class HierarchyWidget extends StatelessWidget {
                           isLast: length - 1 == index,
                         ),
                         Container(
-                          width: 24,
+                          width: 30,
                           height: 1,
                           color: context.c.hintColor,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         child,
                       ],
                     ),
