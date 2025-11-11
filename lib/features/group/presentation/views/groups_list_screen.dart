@@ -104,7 +104,9 @@ class _GroupTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Avatar(),
+            const Avatar(
+              size: 36,
+            ),
             const SizedBox(width: 16),
             Text(
               group.name,

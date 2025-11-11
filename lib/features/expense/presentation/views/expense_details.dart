@@ -225,8 +225,8 @@ class _PaidDetailsRow extends StatelessWidget {
     return Row(
       children: [
         Avatar(
-          height: isPaidBy ? 48 : 24,
-          width: isPaidBy ? 48 : 24,
+          seed: name,
+          size: isPaidBy ? 48 : 24,
         ),
         SizedBox(
           width: isPaidBy ? 16 : 8,

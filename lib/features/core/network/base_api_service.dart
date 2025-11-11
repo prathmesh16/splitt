@@ -51,7 +51,6 @@ class BaseAPIService {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
-    print(this.baseUrl);
     return _sendRequest(
       requestType: RequestType.post,
       endpoint: endpoint,

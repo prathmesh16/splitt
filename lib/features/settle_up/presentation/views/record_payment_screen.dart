@@ -115,8 +115,7 @@ class _RecordPaymentScreenState extends State<RecordPaymentScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Avatar(
-                        height: 60,
-                        width: 60,
+                        size: 60,
                       ),
                       SizedBox(width: 8),
                       Icon(
@@ -125,8 +124,7 @@ class _RecordPaymentScreenState extends State<RecordPaymentScreen> {
                       ),
                       SizedBox(width: 8),
                       Avatar(
-                        height: 60,
-                        width: 60,
+                        size: 60,
                       ),
                     ],
                   ),
