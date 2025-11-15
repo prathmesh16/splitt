@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/models/expense.dart';
 import 'package:splitt/features/users/presentation/models/user.dart';
@@ -124,28 +125,10 @@ class _UserTile extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Container(
-                height: 36,
-                width: 36,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: Image.network(
-                  "https://avatar.iran.liara.run/public/boy",
-                  loadingBuilder: (_, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    }
-                    return Container(
-                      height: 36,
-                      width: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    );
-                  },
-                ),
+              Avatar(
+                seed: user.name,
+                size: 36,
+                borderRadius: BorderRadius.circular(18),
               ),
               const SizedBox(width: 16),
               Text(

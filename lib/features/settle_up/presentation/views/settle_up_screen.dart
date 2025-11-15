@@ -130,9 +130,9 @@ class _UserTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Avatar(
-              height: 48,
-              width: 48,
+            Avatar(
+              size: 48,
+              seed: user.name,
             ),
             const SizedBox(width: 16),
             Column(

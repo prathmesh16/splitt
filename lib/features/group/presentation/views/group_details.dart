@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:splitt/common/add_expense_button.dart';
+import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/currency_amount.dart';
 import 'package:splitt/common/custom_refresh_indicator.dart';
 import 'package:splitt/common/elevated_widget.dart';
@@ -126,9 +127,10 @@ class _GroupDetailsState extends State<GroupDetails> {
                         fit: StackFit.expand,
                         clipBehavior: Clip.none,
                         children: [
-                          Image.network(
-                            "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
-                            fit: BoxFit.cover,
+                          Avatar(
+                            seed: widget.group.name,
+                            borderRadius: BorderRadius.zero,
+                            size: double.infinity,
                           ),
                           Align(
                             alignment: Alignment.topCenter,
@@ -172,12 +174,9 @@ class _GroupDetailsState extends State<GroupDetails> {
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(4),
-                                  child: ClipRRect(
+                                  child: Avatar(
+                                    seed: widget.group.name,
                                     borderRadius: BorderRadius.circular(6),
-                                    child: Image.network(
-                                      "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
-                                      fit: BoxFit.cover,
-                                    ),
                                   ),
                                 ),
                               ),

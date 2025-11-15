@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitt/common/avatar.dart';
 import 'package:splitt/common/currency_amount.dart';
-import 'package:splitt/common/custom_divider.dart';
 import 'package:splitt/common/custom_refresh_indicator.dart';
 import 'package:splitt/common/hierarchy_widget.dart';
 import 'package:splitt/common/page_transitions.dart';
 import 'package:splitt/features/group/presentation/bloc/group_dashboard_bloc.dart';
-import 'package:splitt/features/group/presentation/bloc/groups_bloc.dart';
-import 'package:splitt/features/group/presentation/models/group.dart';
 import 'package:splitt/features/core/models/ui_state.dart';
 import 'package:splitt/features/group/presentation/models/group_dashboard.dart';
 import 'package:splitt/features/group/presentation/views/create_group_screen.dart';
@@ -209,16 +206,13 @@ class _GroupTile extends StatelessWidget {
           childLeftPadding: 23.5,
           header: Row(
             children: [
-              Container(
-                height: 48,
-                width: 48,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset("assets/images/group_avatar.png"),
-                ),
+              Avatar(
+                seed: group.group.name,
+                size: 48,
+                borderRadius: BorderRadius.circular(10),
+                icon: Icons.home_rounded,
+                iconColor: Colors.white,
+                iconSize: 30,
               ),
               const SizedBox(width: 16),
               Text(
