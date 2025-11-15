@@ -210,7 +210,7 @@ class _GroupTile extends StatelessWidget {
                 seed: group.group.name,
                 size: 48,
                 borderRadius: BorderRadius.circular(10),
-                icon: Icons.flight_takeoff_rounded,
+                icon: Icons.home_rounded,
                 iconColor: Colors.white,
                 iconSize: 30,
               ),
